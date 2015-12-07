@@ -16,8 +16,8 @@ describe('Opportunity', () => {
 
     before((done) => {
 
-        const token = 'test_token';
-        const secret = 'test_secret';
+        const token = process.env.TOKEN;
+        const secret = process.env.SECRET;
         const host = 'http://' + process.env.HOST;
         const port = process.env.PORT;
 

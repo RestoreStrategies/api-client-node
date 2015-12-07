@@ -5,8 +5,7 @@ image_name='forthecity-client'
 container_name='forthecity-client'
 
 # Make environment variables available
-HOST=$(ifconfig docker0 | grep "inet addr" | sed -r "s/.*inet addr:([0-9.]*).*$/\1/")
-PORT='6151'
+source env.sh
 
 # Build docker image based on Dockerfile, if creating or starting container.
 if [ "$1" = "-c" ] || [ "$1" = "-s" ] || [ "$1" = "-r" ] || [ "$1" = "-t" ]; then
@@ -68,8 +67,8 @@ fi
 if [ "$1" = "-c" ]; then
 	echo "Creating & starting $containter_name container..."
 	docker run -d -v $PWD:/opt/app -e HOST=$HOST -e PORT=$PORT \
-	-e NODE_ENV="test" --name="$container_name" \
-	--link forthecity-api:api $image_name
+	-e TOKEN=$TOKEN -e SECRET=$SECRET -e NODE_ENV="test" \
+	--name="$container_name" --link forthecity-api:api $image_name
 fi
 
 # -s
@@ -102,7 +101,7 @@ fi
 # Run tests.
 if [ "$1" = "-t" ]; then
 	docker run --rm -v $PWD:/opt/app -e HOST=$HOST -e PORT=$PORT \
-	-e NODE_ENV='test' \
+	-e TOKEN=$TOKEN -e SECRET=$SECRET -e NODE_ENV='test' \
 	--link forthecity-api:api $image_name /bin/bash -c "npm test"
 fi
 
@@ -110,6 +109,7 @@ fi
 # Run interactive container
 if [ "$1" = "--interactive" ]; then
 	docker run --rm -i -t -v $PWD:/opt/app -e HOST=$HOST -e PORT=$PORT \
+	-e TOKEN=$TOKEN -e SECRET=$SECRET \
 	--link forthecity-api:api $image_name /bin/bash
 fi
 
