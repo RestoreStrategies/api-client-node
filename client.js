@@ -3,6 +3,14 @@
 const Hawk = require('hawk');
 const Request = require('request');
 
+/**
+* API client
+*
+* @constructor
+*
+* @param {hash} hash -- The client's configuration. The hash must include a
+* token & secret.
+*/
 const Client = function () {
 
     let token;
@@ -76,9 +84,9 @@ const Client = function () {
             Request(options, (error, response, body) => {
 
                 resolve({
-                    error: error,
                     response: response,
-                    body: body
+                    data: body,
+                    error: error
                 });
             });
         });
@@ -87,7 +95,17 @@ const Client = function () {
     };
 
     this.opportunities = {
-        show: function (id) {
+
+        /**
+        * Gets an opportunity based on id
+        *
+        * @param {integer} id -- The id of the opportunity.
+        *
+        * @returns {promise} promise -- A promise that resolves to result hash
+        * which contains an HTTP Response object (response), the opportunity
+        * object (data), and, possibly, an error (error).
+        */
+        get: function (id) {
 
             const path = host + ':' + port + '/api/opportunities/' + id;
 
@@ -99,18 +117,19 @@ const Client = function () {
 
                     // Check for 200 or 300 status codes.
                     if (status[0] === '2' || status[0] === '3') {
-                        resolve(result.response);
+                        resolve(result);
                     }
                     else {
-                        reject({
-                            error: result.error,
-                            response: result.response
-                        });
+                        reject(result);
                     }
                 });
             });
 
             return promise;
+        },
+
+        list: function (page) {
+
         }
     };
 

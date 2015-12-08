@@ -32,14 +32,16 @@ describe('Opportunity', () => {
 
     it('should GET an opportunity by id', (done) => {
 
-        apiClient.opportunities.show(1).then((response) => {
+        apiClient.opportunities.get(1).then((result) => {
 
-            expect(response.statusCode).to.deep.equal(200);
+            expect(result.response.statusCode).to.deep.equal(200);
+            expect(result.error).to.be.null();
             done();
-        }).catch((response) => {
+        }).catch((result) => {
 
-            expect(response.statusCode).to.deep.equal(200);
-            done(response.error);
+            expect(result.response.statusCode).to.deep.equal(200);
+            expect(result.error).to.be.null();
+            done(result.error);
         });
     });
 
