@@ -45,5 +45,18 @@ describe('Opportunity', () => {
         });
     });
 
-    it('should GET a list of all opportunities');
+    it('should GET a list of all opportunities', (done) => {
+
+        apiClient.opportunities.list().then((result) => {
+
+            expect(result.response.statusCode).to.deep.equal(200);
+            expect(result.error).to.be.null();
+            done();
+        }).catch((result) => {
+
+            expect(result.response.statusCode).to.deep.equal(200);
+            expect(result.error).to.be.null();
+            done();
+        });
+    });
 });

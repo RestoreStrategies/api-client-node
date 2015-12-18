@@ -130,6 +130,25 @@ const Client = function () {
 
         list: function (page) {
 
+            const path = host + ':' + port + '/api/opportunities';
+
+            const promise = new Promise((resolve, reject) => {
+
+                apiRequest(path, 'GET', null).then((result) => {
+
+                    const status = result.response.statusCode.toString();
+
+                    // Check for 200 or 300 status codes.
+                    if (status[0] === '2' || status[0] === '3') {
+                        resolve(result);
+                    }
+                    else {
+                        reject(result);
+                    }
+                });
+            });
+
+            return promise;
         }
     };
 
