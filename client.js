@@ -114,6 +114,7 @@ const Client = function () {
                 apiRequest(path, 'GET', null).then((result) => {
 
                     const status = result.response.statusCode.toString();
+                    result.data = JSON.parse(result.data);
 
                     // Check for 200 or 300 status codes.
                     if (status[0] === '2' || status[0] === '3') {
@@ -137,6 +138,7 @@ const Client = function () {
                 apiRequest(path, 'GET', null).then((result) => {
 
                     const status = result.response.statusCode.toString();
+                    result.data = JSON.parse(result.data);
 
                     // Check for 200 or 300 status codes.
                     if (status[0] === '2' || status[0] === '3') {
