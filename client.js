@@ -61,8 +61,21 @@ const Client = function () {
     // Generate the Hawk authorization header.
     const generateHeader = function (path, verb, data) {
 
+        let extString = null;
+
+        if (data !== null && typeof data === 'object') {
+            const keys = Object.keys(data);
+            extString = '{' + keys[0] + ': \'' + data[keys[0]] + '\'';
+
+            for (let i = 1; i < keys.length; ++i) {
+                extString += ', ' + keys[i] + ': \'' + data[i] + '\'';
+            }
+
+            extString += '}';
+        }
+
         return Hawk.client.header(path, verb,
-            { credentials: credentials, ext: data });
+            { credentials: credentials, ext: extString });
 
     };
 
@@ -92,6 +105,48 @@ const Client = function () {
         });
 
         return promise;
+    };
+
+    /**
+    * Takes a hash & turns it into a URL query string.
+    */
+    const paramsToString = function (params) {
+
+        /**
+        * Takes in a key & value, returns a URL escaped string in URL query
+        * format.
+        */
+        const _parameterize = function (key, value) {
+
+            return key + '=' + encodeURIComponent(value);
+        };
+
+        const queryArray = [];
+
+        if (typeof params !== 'object') {
+            return null;
+        }
+
+        const keys = Object.keys(params);
+
+        if (keys.length < 1) {
+            return queryString;
+        }
+
+        for (let i = 0; i < keys.length; ++i) {
+
+            if (Array.isArray(params[keys[i]])) {
+                for (let j = 0; j < params[keys[i]].length; ++j) {
+                    queryArray.push(_parameterize(keys[i] + '[]',
+                                                  params[keys[i]][j]));
+                }
+            }
+            else {
+                queryArray.push(_parameterize(keys[i], params[keys[i]]));
+            }
+        }
+
+        return queryArray.join('&');
     };
 
     this.opportunities = {
@@ -154,9 +209,25 @@ const Client = function () {
         }
     };
 
-    this.signup = {};
+    this.search = function (parameters) {
 
-    this.search = {};
+        const query = paramsToString(parameters);
+
+        const path = host + ':' + port + '/api/search?' + query;
+
+        const promise = new Promise((resolve, reject) => {
+
+            apiRequest(path, 'GET', null).then((result) => {
+
+                result.data = JSON.parse(result.data);
+                resolve(result);
+            });
+        });
+
+        return promise;
+    };
+
+    this.signup = {};
 };
 
 module.exports = Client;
