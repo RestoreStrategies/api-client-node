@@ -88,7 +88,7 @@ const Client = function () {
             method: verb,
             headers: {
                 Authorization: hawkHeader.field,
-                api_version: 1
+                'api-version': 1
             }
         };
 
