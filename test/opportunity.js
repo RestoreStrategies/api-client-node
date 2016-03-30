@@ -9,7 +9,6 @@ const lab = exports.lab = Lab.script();
 const describe = lab.describe;
 const it = lab.it;
 const before = lab.before;
-//const afterEach = lab.afterEach;
 const expect = Code.expect;
 
 describe('Opportunity', () => {
@@ -35,13 +34,9 @@ describe('Opportunity', () => {
         apiClient.opportunities.get(1).then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
+            expect(result.data.id).to.equal('1');
             expect(result.error).to.be.null();
             done();
-        }).catch((result) => {
-
-            expect(result.response.statusCode).to.deep.equal(200);
-            expect(result.error).to.be.null();
-            done(result.error);
         });
     });
 
@@ -50,11 +45,7 @@ describe('Opportunity', () => {
         apiClient.opportunities.list().then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
-            expect(result.error).to.be.null();
-            done();
-        }).catch((result) => {
-
-            expect(result.response.statusCode).to.deep.equal(200);
+            expect(result.data[0].id).to.equal('1');
             expect(result.error).to.be.null();
             done();
         });

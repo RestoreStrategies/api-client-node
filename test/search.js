@@ -38,7 +38,7 @@ describe('Search', () => {
         apiClient.search(parameters).then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
-            expect(Array.isArray(result.data.collection.items));
+            expect(Array.isArray(result.data));
             expect(result.error).to.be.null();
             done();
         });
@@ -54,7 +54,7 @@ describe('Search', () => {
         apiClient.search(parameters).then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
-            expect(Array.isArray(result.data.collection.items));
+            expect(Array.isArray(result.data));
             expect(result.error).to.be.null();
             done();
         });
@@ -72,7 +72,7 @@ describe('Search', () => {
         apiClient.search(parameters).then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
-            expect(Array.isArray(result.data.collection.items));
+            expect(Array.isArray(result.data));
             expect(result.error).to.be.null();
             done();
         });
