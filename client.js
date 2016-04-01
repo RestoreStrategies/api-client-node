@@ -404,7 +404,55 @@ const Client = function () {
         return promise;
     };
 
-    this.signup = {};
+    this.signup = {
+        /**
+        * Get a signup template
+        *
+        * @param {integer} id   The id of an opportunity
+        *
+        * @returns {promise}    A promise that resolves to a hash which contains
+        * an HTTP Response object (response), the template if it exists (data),
+        * and, possibly, a client error (error). The promise rejects if it does
+        * not receive a 2xx or 3xx response from the server, it rejects with the
+        * same response, data, & error keys in a hash.
+        */ 
+        template: function (id) {
+
+            const path = host + ':' + port + '/api/opportunities/' +
+                            id + '/signup';
+
+            const promise = new Promise((resolve, reject) => {
+
+                apiRequest(path, 'GET', null).then((result) => {
+
+                    const status = result.response.statusCode.toString();
+                    result.data = JSON.parse(result.data);
+
+                    if (status[0] === '2' || status[0] === '3') {
+
+                        CollectionUtil.validateCollection(result.data).
+                        then((collection) => {
+
+                            result.data = result.data.collection.template;
+                            resolve(result);
+                        }).catch((err) => {
+
+                            console.log(err);
+                            resolve(result);
+                        });
+                    }
+                    else {
+                        reject(result);
+                    }
+                });
+            });
+
+            return promise;
+        },
+
+        submit: function (id, template) {
+        }
+    };
 };
 
 module.exports = Client;
