@@ -40,6 +40,20 @@ describe('Opportunity', () => {
         });
     });
 
+    it('should handle a non-existent opportunity', (done) => {
+
+        apiClient.opportunities.get(10000).catch((result) => {
+
+            const collection = result.data.collection;
+
+            expect(result.response.statusCode).to.deep.equal(404);
+            expect(collection.error.title).to.equal('Not found');
+            expect(collection.error.code).to.equal(404);
+            expect(result.error).to.be.null();
+            done();
+        });
+    });
+
     it('should GET a list of all opportunities', (done) => {
 
         apiClient.opportunities.list().then((result) => {
