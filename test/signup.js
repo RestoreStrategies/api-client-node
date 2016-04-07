@@ -33,6 +33,7 @@ describe('Signup', () => {
         });
     });
 
+
     it('should handle requesting template for nonexistent opportunity',
     (done) => {
 
@@ -48,6 +49,31 @@ describe('Signup', () => {
                 message: 'Signup template not found'
             });
 
+            done();
+        });
+    });
+
+
+    it('should submit a signup', (done) => {
+
+        const data = {
+            template: {
+                data: [
+                    { name: 'givenName', value: 'Jon' },
+                    { name: 'familyName', value: 'Doe' },
+                    { name: 'telephone', value: '5124567890' },
+                    { name: 'email', value: 'jon.doe@example.com' },
+                    { name: 'comment', value: '' },
+                    { name: 'numOfItemsCommitted', value: 1 },
+                    { name: 'lead', value: 'other' }
+                ]
+            }
+        };
+
+        apiClient.signup.submit(1, data).then((result) => {
+
+            const status = result.response.statusCode;
+            expect(status).to.equal(202);
             done();
         });
     });

@@ -83,18 +83,24 @@ const Client = function () {
     };
 
 
-    const apiRequest = function (path, verb, data) {
+    const apiRequest = function (path, verb, json) {
 
-        const hawkHeader = generateHeader(path, verb, data);
+        const hawkHeader = generateHeader(path, verb);
 
         const options = {
             uri: path,
             method: verb,
             headers: {
                 Authorization: hawkHeader.field,
-                'api-version': 1
+                'api-version': 1,
+                'Accept': 'application/vnd.collection+json'
             }
         };
+
+        if (json) {
+            options.headers['content-type'] = 'application/vnd.collection+json';
+            options.json = json;
+        }
 
         const promise = new Promise((resolve, reject) => {
 
@@ -415,7 +421,7 @@ const Client = function () {
         * and, possibly, a client error (error). The promise rejects if it does
         * not receive a 2xx or 3xx response from the server, it rejects with the
         * same response, data, & error keys in a hash.
-        */ 
+        */
         template: function (id) {
 
             const path = host + ':' + port + '/api/opportunities/' +
@@ -451,6 +457,30 @@ const Client = function () {
         },
 
         submit: function (id, template) {
+
+            const path = host + ':' + port + '/api/opportunities/' +
+                         id + '/signup';
+
+            const promise = new Promise((resolve, reject) => {
+
+                apiRequest(path, 'POST', template).then((result) => {
+
+                    const status = result.response.statusCode.toString();
+
+                    //console.log('request made', result.data);
+                    //result.data = JSON.parse(result.data);
+
+                    if (status[0] === '2' || status[0] === '3') {
+                        resolve(result);
+                    }
+                    else {
+                        reject(result);
+                    }
+
+                });
+            });
+
+            return promise;
         }
     };
 };
