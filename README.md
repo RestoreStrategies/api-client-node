@@ -62,3 +62,32 @@ apiClient.search(searchParams).then((result) => {
     console.log(result.data);
 });
 ```
+
+## Signup
+
+The client can submit signups for opportunities.
+
+The signup data is in the form of a Collection+JSON template.
+
+```javascript
+const templateData = {
+    template: {
+        data: [
+            { name: 'givenName', value: 'Jon' },
+            { name: 'familyName', value: 'Doe' },
+            { name: 'telephone', value: '5124567890' },
+            { name: 'email', value: 'jon.doe@example.com' },
+            { name: 'comment', value: '' },
+            { name: 'numOfItemsCommitted', value: 1 },
+            { name: 'lead', value: 'other' }
+        ]
+    }
+};
+
+apiClient.signup.submit(1, templateData).then((result) => {
+
+    if (result.response.statusCode === 202) {
+        console.log('The signup was accepted!');
+    }
+});
+```

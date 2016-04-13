@@ -456,6 +456,32 @@ const Client = function () {
             return promise;
         },
 
+        /**
+         * Submit a signup
+         *
+         * @param {integer}    id   The id of an opportunity
+         *
+         * @param {hash} template   A valid Collection+JSON template.
+         * Example:  {
+         *              template: {
+         *                  data: [
+         *                      { name: 'givenName', value: 'Jon' },
+         *                      { name: 'familyName', value: 'Doe' },
+         *                      { name: 'telephone', value: '5124567890' },
+         *                      { name: 'email', value: 'jon.doe@example.com' },
+         *                      { name: 'comment', value: '' },
+         *                      { name: 'numOfItemsCommitted', value: 1 },
+         *                      { name: 'lead', value: 'other' }
+         *                  ]
+         *              }
+         *          }
+         *
+         * @returns {promise}       A promise that resolves to a hash which
+         * contains an HTTP Response object (response), the response body
+         * (data), and, possibly, a client error (error). The promise rejects if
+         * it does not receive a 2xx or 3xx response from the server, it rejects 
+         * with the same response, data, & error keys in a hash.
+         */
         submit: function (id, template) {
 
             const path = host + ':' + port + '/api/opportunities/' +
