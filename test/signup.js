@@ -24,6 +24,20 @@ describe('Signup', () => {
         port: port
     });
 
+    const templateData = {
+        template: {
+            data: [
+                { name: 'givenName', value: 'Jon' },
+                { name: 'familyName', value: 'Doe' },
+                { name: 'telephone', value: '5124567890' },
+                { name: 'email', value: 'jon.doe@example.com' },
+                { name: 'comment', value: '' },
+                { name: 'numOfItemsCommitted', value: 1 },
+                { name: 'lead', value: 'other' }
+            ]
+        }
+    };
+
     it('should get the signup template for an opportunity', (done) => {
 
         apiClient.signup.template(1).then((template) => {
@@ -54,23 +68,24 @@ describe('Signup', () => {
     });
 
 
-    it('should submit a signup', (done) => {
+    it('should submit a signup for existing person', (done) => {
 
-        const data = {
-            template: {
-                data: [
-                    { name: 'givenName', value: 'Jon' },
-                    { name: 'familyName', value: 'Doe' },
-                    { name: 'telephone', value: '5124567890' },
-                    { name: 'email', value: 'jon.doe@example.com' },
-                    { name: 'comment', value: '' },
-                    { name: 'numOfItemsCommitted', value: 1 },
-                    { name: 'lead', value: 'other' }
-                ]
-            }
-        };
+        apiClient.signup.submit(1, templateData).then((result) => {
 
-        apiClient.signup.submit(1, data).then((result) => {
+            const status = result.response.statusCode;
+            expect(status).to.equal(202);
+            done();
+        });
+    });
+
+
+    it('should submit a signup for a new person', (done) => {
+
+        const email = 'jon.doe.' + Date.now() + '@example.com';
+
+        templateData.template.data[3].value = email;
+
+        apiClient.signup.submit(1, templateData).then((result) => {
 
             const status = result.response.statusCode;
             expect(status).to.equal(202);
