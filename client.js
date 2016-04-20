@@ -16,8 +16,8 @@ const Client = function () {
 
     let token;
     let secret;
-    let host = 'https://api.restorestrategies.org';
-    let port = 443;
+    let host = 'http://api.restorestrategies.org';
+    let port = 80;
     let algorithm = 'sha256';
 
     if (arguments.length !== 1) {
