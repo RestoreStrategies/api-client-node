@@ -309,7 +309,7 @@ const Client = function () {
     *           ]
     *       },
     *       {
-    *           name: 'region',
+    *           name: 'regions',
     *           prompt: '(optional) Select 0 or more geographical regions',
     *           array: [
     *               'North',
@@ -320,7 +320,7 @@ const Client = function () {
     *           ]
     *       },
     *       {
-    *           name: 'time',
+    *           name: 'times',
     *           prompt: '(optional) Select 0 or more times of day',
     *           array: [
     *               'Morning',
@@ -330,7 +330,7 @@ const Client = function () {
     *           ]
     *       },
     *       {
-    *           name: 'day',
+    *           name: 'days',
     *           prompt: '(optional) Select 0 or more days of the week',
     *           array: [
     *               'Monday',
@@ -353,7 +353,7 @@ const Client = function () {
     *            ]
     *        },
     *        {
-    *            name: 'group_type',
+    *            name: 'group_types',
     *            prompt: '(optional) Select 0 or more volunteer group types',
     *            array: [
     *                'Individual',
