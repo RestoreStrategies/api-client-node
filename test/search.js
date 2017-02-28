@@ -29,6 +29,18 @@ describe('Search', () => {
         done();
     });
 
+    it('should do a blank search', (done) => {
+
+        apiClient.search({}).then((result) => {
+
+            expect(result.response.statusCode).to.deep.equal(200);
+            expect(Array.isArray(result.data));
+            expect(result.data).to.have.length(0);
+            expect(result.error).to.be.null();
+            done();
+        });
+    });
+
     it('should do a full text search', (done) => {
 
         const parameters = {

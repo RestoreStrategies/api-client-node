@@ -156,10 +156,6 @@ const Client = function () {
 
         const keys = Object.keys(params);
 
-        if (keys.length < 1) {
-            return queryString;
-        }
-
         for (let i = 0; i < keys.length; ++i) {
 
             if (Array.isArray(params[keys[i]])) {
@@ -479,7 +475,7 @@ const Client = function () {
          * @returns {promise}       A promise that resolves to a hash which
          * contains an HTTP Response object (response), the response body
          * (data), and, possibly, a client error (error). The promise rejects if
-         * it does not receive a 2xx or 3xx response from the server, it rejects 
+         * it does not receive a 2xx or 3xx response from the server, it rejects
          * with the same response, data, & error keys in a hash.
          */
         submit: function (id, template) {
@@ -492,9 +488,6 @@ const Client = function () {
                 apiRequest(path, 'POST', template).then((result) => {
 
                     const status = result.response.statusCode.toString();
-
-                    //console.log('request made', result.data);
-                    //result.data = JSON.parse(result.data);
 
                     if (status[0] === '2' || status[0] === '3') {
                         resolve(result);
