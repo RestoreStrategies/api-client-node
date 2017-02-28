@@ -60,7 +60,7 @@ describe('Signup', () => {
             expect(error).to.deep.equal({
                 title: 'Not found',
                 code: 404,
-                message: 'Signup template not found'
+                message: 'Opportunity not found'
             });
 
             done();
