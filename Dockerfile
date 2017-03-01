@@ -1,8 +1,8 @@
 FROM node:4
 
 MAINTAINER Joseph Simmons 'joseph@austinstone.org'
-ENV REFRESHED 2015-12-03
-ENV NODE_PATH /usr/local/lib/node_modules/forthecity-client/node_modules/
+ENV REFRESHED 2017-03-01
+ENV NODE_PATH /usr/local/lib/node_modules/restore-strategies-client/node_modules/
 ENV NODE_ENV development
 VOLUME ["/opt/app"]
 WORKDIR "/opt/app"
