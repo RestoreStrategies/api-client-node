@@ -83,6 +83,20 @@ const Client = function () {
     };
 
 
+    /**
+     * Perform an API request
+     *
+     * @param {string} path The URL path to the requested resource
+     *
+     * @param {string} verb The HTTP verb of the request
+     *
+     * @param {json} json   (optional) The JSON request body
+     *
+     * @returns {promise}   A promise that resolves to an object which contains
+     *                      an HTTP Response object (response), the response
+     *                      body (data), and -- possibly -- a client error
+     *                      (error).
+     */
     const apiRequest = function (path, verb, json) {
 
         const hawkHeader = generateHeader(path, verb);
@@ -173,6 +187,99 @@ const Client = function () {
     };
 
 
+    /**
+     * Retrieve a single item from a Collection+JSON collection
+     *
+     * @param {string} path The URL path to the given item
+     *
+     * @returns {promise}   A promise that resolves to an object which contains
+     *                      an HTTP Response object (response), the response
+     *                      body (data), and -- possibly -- a client error
+     *                      (error).
+     */
+    const get = function (path) {
+
+        const promise = new Promise((resolve, reject) => {
+
+            apiRequest(path, 'GET', null).then((result) => {
+
+                const status = result.response.statusCode.toString();
+                result.data = JSON.parse(result.data);
+
+                // Check for 200 or 300 status codes.
+                if (status[0] === '2' || status[0] === '3') {
+
+                    CollectionUtil.validateCollection(result.data).
+                    then((jsonCollection) => {
+
+                        const items = CollectionUtil.
+                                      objectifyCollection(jsonCollection);
+
+                        result.data = items[0];
+
+                        resolve(result);
+                    }).catch((err) => {
+
+                        console.log(err);
+                        resolve(result);
+                    });
+                }
+                else {
+                    reject(result);
+                }
+
+            });
+        });
+
+        return promise;
+    };
+
+
+    /**
+     * Retrieve an entire Collection+JSON collection
+     *
+     * @param {string} path The URL path to the collection
+     *
+     * @returns {promise}   A promise that resolves to an object which contains
+     *                      an HTTP Response object (response), the response
+     *                      body (data), and -- possibly -- a client error
+     *                      (error).
+     */
+    const list = function (path) {
+
+        const promise = new Promise((resolve, reject) => {
+
+            apiRequest(path, 'GET', null).then((result) => {
+
+                const status = result.response.statusCode.toString();
+                result.data = JSON.parse(result.data);
+
+                // Check for 200 or 300 status codes.
+                if (status[0] === '2' || status[0] === '3') {
+                    CollectionUtil.validateCollection(result.data).
+                    then((jsonCollection) => {
+
+                        const items = CollectionUtil.
+                                      objectifyCollection(jsonCollection);
+
+                        result.data = items;
+                        resolve(result);
+                    }).catch((err) => {
+
+                        resolve(result);
+                    });
+
+                }
+                else {
+                    reject(result);
+                }
+            });
+        });
+
+        return promise;
+    };
+
+
     this.opportunities = {
 
         /**
@@ -186,41 +293,7 @@ const Client = function () {
         */
         get: function (id) {
 
-            const path = host + ':' + port + '/api/opportunities/' + id;
-
-            const promise = new Promise((resolve, reject) => {
-
-                apiRequest(path, 'GET', null).then((result) => {
-
-                    const status = result.response.statusCode.toString();
-                    result.data = JSON.parse(result.data);
-
-                    // Check for 200 or 300 status codes.
-                    if (status[0] === '2' || status[0] === '3') {
-
-                        CollectionUtil.validateCollection(result.data).
-                        then((jsonCollection) => {
-
-                            const items = CollectionUtil.
-                                          objectifyCollection(jsonCollection);
-
-                            result.data = items[0];
-
-                            resolve(result);
-                        }).catch((err) => {
-
-                            console.log(err);
-                            resolve(result);
-                        });
-                    }
-                    else {
-                        reject(result);
-                    }
-
-                });
-            });
-
-            return promise;
+            return get(host + ':' + port + '/api/opportunities/' + id);
         },
 
 
@@ -233,38 +306,7 @@ const Client = function () {
         */
         list: function () {
 
-            const path = host + ':' + port + '/api/opportunities';
-
-            const promise = new Promise((resolve, reject) => {
-
-                apiRequest(path, 'GET', null).then((result) => {
-
-                    const status = result.response.statusCode.toString();
-                    result.data = JSON.parse(result.data);
-
-                    // Check for 200 or 300 status codes.
-                    if (status[0] === '2' || status[0] === '3') {
-                        CollectionUtil.validateCollection(result.data).
-                        then((jsonCollection) => {
-
-                            const items = CollectionUtil.
-                                          objectifyCollection(jsonCollection);
-
-                            result.data = items;
-                            resolve(result);
-                        }).catch((err) => {
-
-                            resolve(result);
-                        });
-
-                    }
-                    else {
-                        reject(result);
-                    }
-                });
-            });
-
-            return promise;
+            return list(host + ':' + port + '/api/opportunities');
         }
     };
 
@@ -374,36 +416,7 @@ const Client = function () {
     this.search = function (parameters) {
 
         const query = paramsToString(parameters);
-
-        const path = host + ':' + port + '/api/search?' + query;
-
-        const promise = new Promise((resolve, reject) => {
-
-            apiRequest(path, 'GET', null).then((result) => {
-
-                const status = result.response.statusCode.toString();
-                result.data = JSON.parse(result.data);
-
-                if (status[0] === '2' || status[0] === '3') {
-                    CollectionUtil.validateCollection(result.data).
-                    then((jsonCollection) => {
-
-                        const items = CollectionUtil.
-                                      objectifyCollection(jsonCollection);
-                        result.data = items;
-                        resolve(result);
-                    }).catch((err) => {
-
-                        resolve(result);
-                    });
-                }
-                else {
-                    reject(result);
-                }
-            });
-        });
-
-        return promise;
+        return list(host + ':' + port + '/api/search?' + query);
     };
 
     this.signup = {
@@ -500,6 +513,38 @@ const Client = function () {
             });
 
             return promise;
+        }
+    };
+
+    this.organizations = {
+
+        /**
+         * Get an organization
+         *
+         * @param {integer} id  The id of the organization.
+         *
+         * @returns {promise}   A promise that resolves to an object which
+         *                      contains an HTTP Response object (response), the
+         *                      response body (data), and -- possibly -- a
+         *                      client error (error).
+         */
+        get: function (id) {
+
+            return get(host + ':' + port + '/api/organizations/' + id);
+        },
+
+
+        /**
+         * List all organizations
+         *
+         * @returns {promise}   A promise that resolves to an object which
+         *                      contains an HTTP Response object (response), the
+         *                      response body (data), and -- possibly -- a
+         *                      client error (error).
+         */
+        list: function () {
+
+            return list(host + ':' + port + '/api/organizations');
         }
     };
 };
