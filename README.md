@@ -1,13 +1,13 @@
-# For the City API client
+# Restore Strategies API client
 
-This is a Node.js cliet for the For the City Network's API. The API allows clients to view, filter, search & sign up for volunteer opportunities.
+This is a Node.js client for the Restore Strategies's API. The API allows clients to view, filter, search & sign up for volunteer opportunities.
 
 ## Initializing
 
 To use the API you need valid credentials. An instance of the API client requires a user token & secret.
 
 ```javascript
-const Client = require('forthecity-client');
+const Client = require('restore-strategies-client');
 
 const apiClient = new Client({ token: <a_user_token>, secret: <a_user_secet>});
 ```
