@@ -3,7 +3,9 @@
 const Hawk = require('hawk');
 const Request = require('request');
 const CollectionUtil = require('./lib/collection+json.js');
+let that;
 
+class Client {
 /**
 * API client
 *
@@ -12,302 +14,311 @@ const CollectionUtil = require('./lib/collection+json.js');
 * @param {hash} hash    The client's configuration. The hash must include a
 * token & secret.
 */
-const Client = function () {
 
-    let token;
-    let secret;
-    let host = 'http://api.restorestrategies.org';
-    let port = 80;
-    let algorithm = 'sha256';
+    constructor() {
 
-    if (arguments.length !== 1) {
-        throw {
-            name: 'ArgumentError',
-            message: 'Wrong number of arguments'
+        this.host = 'http://api.restorestrategies.org';
+        this.port = 80;
+        this.algorithm = 'sha256';
+
+        if (arguments.length !== 1) {
+            throw {
+                name: 'ArgumentError',
+                message: 'Wrong number of arguments'
+            };
+        }
+        else if (typeof arguments[0] !== 'object') {
+            throw {
+                name: 'ArgumentError',
+                message: 'Argument is not an object'
+            };
+        }
+        else {
+            this.token = arguments[0].token;
+            this.secret = arguments[0].secret;
+
+            if (arguments[0].host !== undefined) {
+                this.host = arguments[0].host;
+            }
+            if (arguments[0].port !== undefined) {
+                this.port = arguments[0].port;
+            }
+            if (arguments[0].algorithm !== undefined) {
+                this.algorithm = arguments[0].algorithm;
+            }
+        }
+
+        // Hawk credentials.
+        this.credentials = {
+            id: this.token,
+            key: this.secret,
+            algorithm: this.algorithm
         };
-    }
-    else if (typeof arguments[0] !== 'object') {
-        throw {
-            name: 'ArgumentError',
-            message: 'Argument is not an object'
-        };
-    }
-    else {
-        token = arguments[0].token;
-        secret = arguments[0].secret;
 
-        if (arguments[0].host !== undefined) {
-            host = arguments[0].host;
-        }
-        if (arguments[0].port !== undefined) {
-            port = arguments[0].port;
-        }
-        if (arguments[0].algorithm !== undefined) {
-            algorithm = arguments[0].algorithm;
-        }
-    }
+        // Generate the Hawk authorization header.
+        this.generateHeader = function (path, verb, data) {
 
-    // Hawk credentials.
-    const credentials = {
-        id: token,
-        key: secret,
-        algorithm: algorithm
-    };
+            let extString = null;
 
+            if (data !== null && typeof data === 'object') {
+                const keys = Object.keys(data);
+                extString = '{' + keys[0] + ': \'' + data[keys[0]] + '\'';
 
-    this.toString = function () {
+                for (let i = 1; i < keys.length; ++i) {
+                    extString += ', ' + keys[i] + ': \'' + data[i] + '\'';
+                }
 
-        return credentials;
-    };
-
-
-    // Generate the Hawk authorization header.
-    const generateHeader = function (path, verb, data) {
-
-        let extString = null;
-
-        if (data !== null && typeof data === 'object') {
-            const keys = Object.keys(data);
-            extString = '{' + keys[0] + ': \'' + data[keys[0]] + '\'';
-
-            for (let i = 1; i < keys.length; ++i) {
-                extString += ', ' + keys[i] + ': \'' + data[i] + '\'';
+                extString += '}';
             }
 
-            extString += '}';
-        }
+            return Hawk.client.header(path, verb,
+                { credentials: this.credentials, ext: extString });
 
-        return Hawk.client.header(path, verb,
-            { credentials: credentials, ext: extString });
-
-    };
-
-
-    /**
-     * Perform an API request
-     *
-     * @param {string} path The URL path to the requested resource
-     *
-     * @param {string} verb The HTTP verb of the request
-     *
-     * @param {json} json   (optional) The JSON request body
-     *
-     * @returns {promise}   A promise that resolves to an object which contains
-     *                      an HTTP Response object (response), the response
-     *                      body (data), and -- possibly -- a client error
-     *                      (error).
-     */
-    const apiRequest = function (path, verb, json) {
-
-        const hawkHeader = generateHeader(path, verb);
-
-        const options = {
-            uri: path,
-            method: verb,
-            headers: {
-                Authorization: hawkHeader.field,
-                'api-version': 1,
-                'Accept': 'application/vnd.collection+json'
-            }
         };
 
-        if (json) {
-            options.headers['content-type'] = 'application/vnd.collection+json';
-            options.json = json;
-        }
 
-        const promise = new Promise((resolve, reject) => {
+        /**
+         * Perform an API request
+         *
+         * @param {string} path The URL path to the requested resource
+         *
+         * @param {string} verb The HTTP verb of the request
+         *
+         * @param {json} json   (optional) The JSON request body
+         *
+         * @returns {promise}   A promise that resolves to an object which
+         *                      contains an HTTP Response object (response), the
+         *                      response body (data), and -- possibly -- a
+         *                      client error (error).
+         */
+        this.apiRequest = function (path, verb, json) {
 
-            Request(options, (error, response, body) => {
+            const hawkHeader = this.generateHeader(path, verb);
 
-                resolve({
-                    response: response,
-                    data: body,
-                    error: error
+            const options = {
+                uri: path,
+                method: verb,
+                headers: {
+                    Authorization: hawkHeader.field,
+                    'api-version': 1,
+                    'Accept': 'application/vnd.collection+json'
+                }
+            };
+
+            if (json) {
+                options.headers['content-type'] =
+                                            'application/vnd.collection+json';
+                options.json = json;
+            }
+
+            const promise = new Promise((resolve, reject) => {
+
+                Request(options, (error, response, body) => {
+
+                    resolve({
+                        response: response,
+                        data: body,
+                        error: error
+                    });
                 });
             });
-        });
 
-        return promise;
-    };
-
-
-    /**
-    * Take a hash & turn it into a URL query string
-    *
-    * @param {hash} params              A hash of query keys & values
-    *
-    * @returns {string} querystring     A valid URL query string
-    *
-    *
-    * Example
-    *
-    * paramsToString({
-    *       q: 'foster care',
-    *       region: ['South', 'Central'],
-    *       issues: ['Education', 'Children/Youth']
-    * })
-    *
-    * Returns:
-    * 'q=foster%20care&region[]=South&region[]=Central&issues[]=Education&issues[]=Children%2FYouth'
-    */
-    const paramsToString = function (params) {
-
-        /**
-        * Takes in a key & value, returns a URL escaped string in URL query
-        * format.
-        */
-        const _parameterize = function (key, value) {
-
-            return key + '=' + encodeURIComponent(value);
+            return promise;
         };
 
-        const queryArray = [];
-
-        if (typeof params !== 'object') {
-            return null;
-        }
-
-        const keys = Object.keys(params);
-
-        for (let i = 0; i < keys.length; ++i) {
-
-            if (Array.isArray(params[keys[i]])) {
-                for (let j = 0; j < params[keys[i]].length; ++j) {
-                    queryArray.push(_parameterize(keys[i] + '[]',
-                                                  params[keys[i]][j]));
-                }
-            }
-            else {
-                queryArray.push(_parameterize(keys[i], params[keys[i]]));
-            }
-        }
-
-        return queryArray.join('&');
-    };
-
-
-    /**
-     * Retrieve a single item from a Collection+JSON collection
-     *
-     * @param {string} path The URL path to the given item
-     *
-     * @returns {promise}   A promise that resolves to an object which contains
-     *                      an HTTP Response object (response), the response
-     *                      body (data), and -- possibly -- a client error
-     *                      (error).
-     */
-    const get = function (path) {
-
-        const promise = new Promise((resolve, reject) => {
-
-            apiRequest(path, 'GET', null).then((result) => {
-
-                const status = result.response.statusCode.toString();
-                result.data = JSON.parse(result.data);
-
-                // Check for 200 or 300 status codes.
-                if (status[0] === '2' || status[0] === '3') {
-
-                    CollectionUtil.validateCollection(result.data).
-                    then((jsonCollection) => {
-
-                        const items = CollectionUtil.
-                                      objectifyCollection(jsonCollection);
-
-                        result.data = items[0];
-
-                        resolve(result);
-                    }).catch((err) => {
-
-                        console.log(err);
-                        resolve(result);
-                    });
-                }
-                else {
-                    reject(result);
-                }
-
-            });
-        });
-
-        return promise;
-    };
-
-
-    /**
-     * Retrieve an entire Collection+JSON collection
-     *
-     * @param {string} path The URL path to the collection
-     *
-     * @returns {promise}   A promise that resolves to an object which contains
-     *                      an HTTP Response object (response), the response
-     *                      body (data), and -- possibly -- a client error
-     *                      (error).
-     */
-    const list = function (path) {
-
-        const promise = new Promise((resolve, reject) => {
-
-            apiRequest(path, 'GET', null).then((result) => {
-
-                const status = result.response.statusCode.toString();
-                result.data = JSON.parse(result.data);
-
-                // Check for 200 or 300 status codes.
-                if (status[0] === '2' || status[0] === '3') {
-                    CollectionUtil.validateCollection(result.data).
-                    then((jsonCollection) => {
-
-                        const items = CollectionUtil.
-                                      objectifyCollection(jsonCollection);
-
-                        result.data = items;
-                        resolve(result);
-                    }).catch((err) => {
-
-                        resolve(result);
-                    });
-
-                }
-                else {
-                    reject(result);
-                }
-            });
-        });
-
-        return promise;
-    };
-
-
-    this.opportunities = {
 
         /**
-        * Get an opportunity
+        * Take a hash & turn it into a URL query string
         *
-        * @param {integer} id           The id of the opportunity.
+        * @param {hash} params              A hash of query keys & values
         *
-        * @returns {promise} promise    A promise that resolves to result hash
-        * which contains an HTTP Response object (response), the opportunity
-        * object (data), and, possibly, an error (error).
+        * @returns {string} querystring     A valid URL query string
+        *
+        *
+        * Example
+        *
+        * paramsToString({
+        *       q: 'foster care',
+        *       region: ['South', 'Central'],
+        *       issues: ['Education', 'Children/Youth']
+        * })
+        *
+        * Returns:
+        * 'q=foster%20care&region[]=South&region[]=Central&issues[]=Education&issues[]=Children%2FYouth'
         */
-        get: function (id) {
+        this.paramsToString = function (params) {
 
-            return get(host + ':' + port + '/api/opportunities/' + id);
-        },
+            /**
+            * Takes in a key & value, returns a URL escaped string in URL query
+            * format.
+            */
+            const _parameterize = function (key, value) {
+
+                return key + '=' + encodeURIComponent(value);
+            };
+
+            const queryArray = [];
+
+            if (typeof params !== 'object') {
+                return null;
+            }
+
+            const keys = Object.keys(params);
+
+            for (let i = 0; i < keys.length; ++i) {
+
+                if (Array.isArray(params[keys[i]])) {
+                    for (let j = 0; j < params[keys[i]].length; ++j) {
+                        queryArray.push(_parameterize(keys[i] + '[]',
+                                                      params[keys[i]][j]));
+                    }
+                }
+                else {
+                    queryArray.push(_parameterize(keys[i], params[keys[i]]));
+                }
+            }
+
+            return queryArray.join('&');
+        };
 
 
         /**
-        * List all opportunities
-        *
-        * @returns {promise}    A promise that resolves to result hash
-        * which contains an HTTP Response object (response), an array of
-        * opportunity objects (data), and, possibly, an error (error).
-        */
-        list: function () {
+         * Retrieve a single item from a Collection+JSON collection
+         *
+         * @param {string} path The URL path to the given item
+         *
+         * @returns {promise}   A promise that resolves to an object which
+         *                      contains an HTTP Response object (response), the
+         *                      response body (data), and -- possibly -- a
+         *                      client error (error).
+         */
+        this.getItem = function (path) {
 
-            return list(host + ':' + port + '/api/opportunities');
-        }
+            const promise = new Promise((resolve, reject) => {
+
+                this.apiRequest(path, 'GET', null).then((result) => {
+
+                    const status = result.response.statusCode.toString();
+                    result.data = JSON.parse(result.data);
+
+                    // Check for 200 or 300 status codes.
+                    if (status[0] === '2' || status[0] === '3') {
+
+                        CollectionUtil.validateCollection(result.data).
+                        then((jsonCollection) => {
+
+                            const items = CollectionUtil.
+                                          objectifyCollection(jsonCollection);
+
+                            result.data = items[0];
+
+                            resolve(result);
+                        }).catch((err) => {
+
+                            console.log(err);
+                            resolve(result);
+                        });
+                    }
+                    else {
+                        reject(result);
+                    }
+
+                });
+            });
+
+            return promise;
+        };
+
+
+        /**
+         * Retrieve an entire Collection+JSON collection
+         *
+         * @param {string} path The URL path to the collection
+         *
+         * @returns {promise}   A promise that resolves to an object which
+         *                      contains an HTTP Response object (response), the
+         *                      response body (data), and -- possibly -- a
+         *                      client error (error).
+         */
+        this.listItems = function (path) {
+
+            const promise = new Promise((resolve, reject) => {
+
+                this.apiRequest(path, 'GET', null).then((result) => {
+
+                    const status = result.response.statusCode.toString();
+                    result.data = JSON.parse(result.data);
+
+                    // Check for 200 or 300 status codes.
+                    if (status[0] === '2' || status[0] === '3') {
+
+                        CollectionUtil.validateCollection(result.data).
+                        then((jsonCollection) => {
+
+                            const items = CollectionUtil.
+                                          objectifyCollection(jsonCollection);
+
+                            result.data = items;
+                            resolve(result);
+                        }).catch((err) => {
+
+                            resolve(result);
+                        });
+
+                    }
+                    else {
+                        reject(result);
+                    }
+                });
+            });
+
+            return promise;
+        };
+
+        that = this;
+    };
+
+    toString() {
+
+        return this.credentials;
+    };
+
+    get opportunities() {
+
+        return {
+            /**
+            * Get an opportunity
+            *
+            * @param {integer} id           The id of the opportunity.
+            *
+            * @returns {promise} promise    A promise that resolves to result
+            *                               hash which contains an HTTP Response
+            *                               object (response), the opportunity
+            *                               object (data), and, possibly, an
+            *                               error (error).
+            */
+            get: function (id) {
+
+                return that.getItem(
+                        that.host + ':' + that.port + '/api/opportunities/' + id
+                );
+            },
+
+
+            /**
+            * List all opportunities
+            *
+            * @returns {promise}    A promise that resolves to result hash
+            * which contains an HTTP Response object (response), an array of
+            * opportunity objects (data), and, possibly, an error (error).
+            */
+            list: function () {
+
+                return that.listItems(
+                        that.host + ':' + that.port + '/api/opportunities'
+                );
+            }
+        };
     };
 
 
@@ -413,139 +424,159 @@ const Client = function () {
     * which contains an HTTP Response object (response), an array of
     * opportunity objects (data), and, possibly, an error (error).
     */
-    this.search = function (parameters) {
+    search(parameters) {
 
-        const query = paramsToString(parameters);
-        return list(host + ':' + port + '/api/search?' + query);
+        const query = this.paramsToString(parameters);
+
+        return this.listItems(
+                this.host + ':' + this.port + '/api/search?' + query
+        );
     };
 
-    this.signup = {
-        /**
-        * Get a signup template
-        *
-        * @param {integer} id   The id of an opportunity
-        *
-        * @returns {promise}    A promise that resolves to a hash which contains
-        * an HTTP Response object (response), the template if it exists (data),
-        * and, possibly, a client error (error). The promise rejects if it does
-        * not receive a 2xx or 3xx response from the server, it rejects with the
-        * same response, data, & error keys in a hash.
-        */
-        template: function (id) {
+    get signup() {
 
-            const path = host + ':' + port + '/api/opportunities/' +
-                            id + '/signup';
+        return {
+            /**
+            * Get a signup template
+            *
+            * @param {integer} id   The id of an opportunity
+            *
+            * @returns {promise}    A promise that resolves to a hash which
+            *                       contains an HTTP Response object (response),
+            *                       the template if it exists (data), and,
+            *                       possibly, a client error (error). The
+            *                       promise rejects if it does not receive a 2xx
+            *                       or 3xx response from the server, it rejects
+            *                       with the same response, data, & error keys
+            *                       in a hash.
+            */
+            template: function (id) {
 
-            const promise = new Promise((resolve, reject) => {
+                const path = that.host + ':' + that.port +
+                                '/api/opportunities/' + id + '/signup';
 
-                apiRequest(path, 'GET', null).then((result) => {
+                const promise = new Promise((resolve, reject) => {
 
-                    const status = result.response.statusCode.toString();
-                    result.data = JSON.parse(result.data);
+                    that.apiRequest(path, 'GET', null).then((result) => {
 
-                    if (status[0] === '2' || status[0] === '3') {
+                        const status = result.response.statusCode.toString();
+                        result.data = JSON.parse(result.data);
 
-                        CollectionUtil.validateCollection(result.data).
-                        then((collection) => {
+                        if (status[0] === '2' || status[0] === '3') {
 
-                            result.data = result.data.collection.template;
-                            resolve(result);
-                        }).catch((err) => {
+                            CollectionUtil.validateCollection(result.data).
+                            then((collection) => {
 
-                            console.log(err);
-                            resolve(result);
-                        });
-                    }
-                    else {
-                        reject(result);
-                    }
+                                result.data = result.data.collection.template;
+                                resolve(result);
+                            }).catch((err) => {
+
+                                console.log(err);
+                                resolve(result);
+                            });
+                        }
+                        else {
+                            reject(result);
+                        }
+                    });
                 });
-            });
 
-            return promise;
-        },
+                return promise;
+            },
 
-        /**
-         * Submit a signup
-         *
-         * @param {integer}    id   The id of an opportunity
-         *
-         * @param {hash} template   A valid Collection+JSON template.
-         * Example:  {
-         *              template: {
-         *                  data: [
-         *                      { name: 'givenName', value: 'Jon' },
-         *                      { name: 'familyName', value: 'Doe' },
-         *                      { name: 'telephone', value: '5124567890' },
-         *                      { name: 'email', value: 'jon.doe@example.com' },
-         *                      { name: 'comment', value: '' },
-         *                      { name: 'numOfItemsCommitted', value: 1 },
-         *                      { name: 'lead', value: 'other' }
-         *                  ]
-         *              }
-         *          }
-         *
-         * @returns {promise}       A promise that resolves to a hash which
-         * contains an HTTP Response object (response), the response body
-         * (data), and, possibly, a client error (error). The promise rejects if
-         * it does not receive a 2xx or 3xx response from the server, it rejects
-         * with the same response, data, & error keys in a hash.
-         */
-        submit: function (id, template) {
+            /**
+             * Submit a signup
+             *
+             * @param {integer}    id   The id of an opportunity
+             *
+             * @param {hash} template   A valid Collection+JSON template.
+             * Example:
+             * {
+             *  template: {
+             *       data: [
+             *           { name: 'givenName', value: 'Jon' },
+             *           { name: 'familyName', value: 'Doe' },
+             *           { name: 'telephone', value: '5124567890' },
+             *           { name: 'email', value: 'jon.doe@example.com' },
+             *           { name: 'comment', value: '' },
+             *           { name: 'numOfItemsCommitted', value: 1 },
+             *           { name: 'lead', value: 'other' }
+             *       ]
+             *  }
+             * }
+             *
+             * @returns {promise}       A promise that resolves to a hash which
+             * i                        contains an HTTP Response object
+             *                          (response), the response body (data),
+             *                          and, possibly, a client error (error).
+             *                          The promise rejects if it does not
+             *                          receive a 2xx or 3xx response from the
+             *                          server, it rejects with the same
+             *                          response, data, & error keys in a hash.
+             */
+            submit: function (id, template) {
 
-            const path = host + ':' + port + '/api/opportunities/' +
-                         id + '/signup';
+                const path = that.host + ':' + that.port +
+                            '/api/opportunities/' + id + '/signup';
 
-            const promise = new Promise((resolve, reject) => {
+                const promise = new Promise((resolve, reject) => {
 
-                apiRequest(path, 'POST', template).then((result) => {
+                    that.apiRequest(path, 'POST', template).then((result) => {
 
-                    const status = result.response.statusCode.toString();
+                        const status = result.response.statusCode.toString();
 
-                    if (status[0] === '2' || status[0] === '3') {
-                        resolve(result);
-                    }
-                    else {
-                        reject(result);
-                    }
+                        if (status[0] === '2' || status[0] === '3') {
+                            resolve(result);
+                        }
+                        else {
+                            reject(result);
+                        }
 
+                    });
                 });
-            });
 
-            return promise;
-        }
+                return promise;
+            }
+        };
     };
 
-    this.organizations = {
+    get organizations() {
 
-        /**
-         * Get an organization
-         *
-         * @param {integer} id  The id of the organization.
-         *
-         * @returns {promise}   A promise that resolves to an object which
-         *                      contains an HTTP Response object (response), the
-         *                      response body (data), and -- possibly -- a
-         *                      client error (error).
-         */
-        get: function (id) {
+        return {
+            /**
+             * Get an organization
+             *
+             * @param {integer} id  The id of the organization.
+             *
+             * @returns {promise}   A promise that resolves to an object which
+             *                      contains an HTTP Response object (response),
+             *                      the response body (data), and -- possibly --
+             *                      a client error (error).
+             */
+            get: function (id) {
 
-            return get(host + ':' + port + '/api/organizations/' + id);
-        },
+                return that.getItem(
+                        that.host + ':' + that.port + '/api/organizations/' + id
+                );
+            },
 
 
-        /**
-         * List all organizations
-         *
-         * @returns {promise}   A promise that resolves to an object which
-         *                      contains an HTTP Response object (response), the
-         *                      response body (data), and -- possibly -- a
-         *                      client error (error).
-         */
-        list: function () {
+            /**
+             * List all organizations
+             *
+             * @returns {promise}   A promise that resolves to an object which
+             *                      contains an HTTP Response object (response),
+             *                      the response body (data), and -- possibly --
+             *                      a client error (error).
+             */
+            list: function () {
 
-            return list(host + ':' + port + '/api/organizations');
-        }
+                return that.listItems(
+                        that.host + ':' + that.port + '/api/organizations'
+                );
+            }
+
+        };
     };
 };
 
