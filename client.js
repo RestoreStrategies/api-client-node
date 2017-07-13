@@ -6,15 +6,14 @@ const CollectionUtil = require('./lib/collection+json.js');
 let that;
 
 class Client {
-/**
-* API client
-*
-* @constructor
-*
-* @param {hash} hash    The client's configuration. The hash must include a
-* token & secret.
-*/
-
+    /**
+    * API client
+    *
+    * @constructor
+    *
+    * @param {hash} hash    The client's configuration. The hash must include a
+    * token & secret.
+    */
     constructor() {
 
         this.host = 'http://api.restorestrategies.org';
@@ -576,6 +575,46 @@ class Client {
                 );
             }
 
+        };
+    };
+
+    get users() {
+
+        return {
+            /**
+             * Get a user
+             *
+             * @param {integer} id  The id of the user.
+             *
+             * @returns {promise}   A promise that resolves to an object which
+             *                      contains an HTTP Response object (response),
+             *                      the response body (data), and -- possibly --
+             *                      a client error (error).
+             */
+            get: function (id) {
+
+                return that.getItem(
+                        that.host + ':' + that.port + '/api/admin/users/' + id
+                );
+            },
+
+
+            /**
+             * List all organizations
+             *
+             * @returns {promise}   A promise that resolves to an object which
+             *                      contains an HTTP Response object (response),
+             *                      the response body (data), and -- possibly --
+             *                      a client error (error).
+             */
+            list: function () {
+
+                return that.listItems(
+                        that.host + ':' + that.port + '/api/admin/users'
+                );
+            },
+
+            create: function (template) {}
         };
     };
 };
