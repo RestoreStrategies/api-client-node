@@ -54,7 +54,17 @@ describe('User', () => {
         });
     });
 
-    it('should GET a list of all users');
+    it('should GET a list of all users', (done) => {
+
+        apiClient.users.list().then((result) => {
+
+            expect(result.response.statusCode).to.deep.equal(200);
+            expect(result.data[0].id).to.equal('1');
+            expect(result.data.length).to.above(1);
+            expect(result.error).to.be.null();
+            done();
+        });
+    });
 
     it('should create a user');
 });
