@@ -673,7 +673,7 @@ class Client {
              */
             create: function (template) {
 
-                const path = that.host + ':' + that.port + '/api/admin/users/create';
+                const path = that.host + ':' + that.port + '/api/admin/users';
                 return that.postData(path, template);
             }
         };
