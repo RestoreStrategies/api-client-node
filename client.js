@@ -12,7 +12,7 @@ class Client {
     * @constructor
     *
     * @param {hash} hash    The client's configuration. The hash must include a
-    * token & secret.
+    *                       token & secret.
     */
     constructor() {
 
@@ -274,6 +274,43 @@ class Client {
             return promise;
         };
 
+        /**
+         * Make a POST request
+         *
+         * @param {string} path The URL path of the request
+         *
+         * @parah {hash} template   A valid Collection+JSON template
+         *
+         * @returns {promise}       A promise that resolves to a hash which
+         *                          contains an HTTP Response object
+         *                          (response), the response body (data),
+         *                          and, possibly, a client error (error).
+         *                          The promise rejects if it does not
+         *                          receive a 2xx or 3xx response from the
+         *                          server, it rejects with the same
+         *                          response, data, & error keys in a hash.
+         *
+         */
+        this.postData = function (path, template) {
+
+            const promise = new Promise((resolve, reject) => {
+
+                that.apiRequest(path, 'POST', template).then((result) => {
+
+                    const status = result.response.statusCode.toString();
+
+                    if (status[0] === '2' || status[0] === '3') {
+                        resolve(result);
+                    }
+                    else {
+                        reject(result);
+                    }
+                });
+            });
+
+            return promise;
+        };
+
         that = this;
     };
 
@@ -505,7 +542,7 @@ class Client {
              * }
              *
              * @returns {promise}       A promise that resolves to a hash which
-             * i                        contains an HTTP Response object
+             *                          contains an HTTP Response object
              *                          (response), the response body (data),
              *                          and, possibly, a client error (error).
              *                          The promise rejects if it does not
@@ -518,23 +555,7 @@ class Client {
                 const path = that.host + ':' + that.port +
                             '/api/opportunities/' + id + '/signup';
 
-                const promise = new Promise((resolve, reject) => {
-
-                    that.apiRequest(path, 'POST', template).then((result) => {
-
-                        const status = result.response.statusCode.toString();
-
-                        if (status[0] === '2' || status[0] === '3') {
-                            resolve(result);
-                        }
-                        else {
-                            reject(result);
-                        }
-
-                    });
-                });
-
-                return promise;
+                return that.postData(path, template);
             }
         };
     };
@@ -600,7 +621,7 @@ class Client {
 
 
             /**
-             * List all organizations
+             * List all users
              *
              * @returns {promise}   A promise that resolves to an object which
              *                      contains an HTTP Response object (response),
@@ -614,7 +635,47 @@ class Client {
                 );
             },
 
-            create: function (template) {}
+            /**
+             * Create an api user
+             *
+             * @param {hash} template   A valid Collection+JSON template.
+             *
+             * Example:
+             * {
+             *  template: {
+             *       data: [
+             *           { name: 'email', value: 'jon.doe@example.com' },
+             *           { name: 'givenName', value: 'Jon' },
+             *           { name: 'familyName', value: 'Doe' },
+             *           { name: 'telephone', value: '5124567890' },
+             *           { name: 'franchise_city', value: 'Austin' },
+             *           { name: 'street_address', value: '105 Main Street' },
+             *           { name: 'address_locality', value: 'Austin' },
+             *           { name: 'address_region', value: 'Texas' },
+             *           { name: 'postal_code', value: 78704 },
+             *           { name: 'website', value: 'https://churchexample.com' },
+             *           { name: 'uuid', value: 'dcca945c-79a0-45d1-9d73-010c2496a362' },
+             *           { name: 'plan_level', value: 'Basic' },
+             *           { name: 'church', value: 'Community Church' },
+             *           { name: 'church_size', value: 4567 },
+             *           { name: 'active', value: false }
+             *       ]
+             *  }
+             * }
+             * @returns {promise}       A promise that resolves to a hash which
+             *                          contains an HTTP Response object
+             *                          (response), the response body (data),
+             *                          and, possibly, a client error (error).
+             *                          The promise rejects if it does not
+             *                          receive a 2xx or 3xx response from the
+             *                          server, it rejects with the same
+             *                          response, data, & error keys in a hash.
+             */
+            create: function (template) {
+
+                const path = that.host + ':' + that.port + '/api/admin/users/create';
+                return that.postData(path, template);
+            }
         };
     };
 };
