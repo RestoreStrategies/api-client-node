@@ -1,6 +1,6 @@
 {
     "name": "restore-strategies-client",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "license": "MIT",
     "description": "A Node.js client for the Restore Strategies API",
     "author": "Joseph Simmons <joseph.simmons@forthecity.org>",
