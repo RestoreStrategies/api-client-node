@@ -45,6 +45,9 @@ class Client {
             if (arguments[0].algorithm !== undefined) {
                 this.algorithm = arguments[0].algorithm;
             }
+            if (arguments[0].debug!== undefined) {
+                this.debug = arguments[0].debug;
+            }
         }
 
         // Hawk credentials.
@@ -70,6 +73,9 @@ class Client {
                 extString += '}';
             }
 
+            if (this.debug) {
+                console.log('credentails used ', this.credentials);
+            }
             return Hawk.client.header(path, verb,
                 { credentials: this.credentials, ext: extString });
 
@@ -317,6 +323,14 @@ class Client {
     toString() {
 
         return this.credentials;
+    };
+
+    deconstructor() {
+
+        delete this.credentials;
+        delete this.host;
+        delete this.port;
+        delete this.algorithm;
     };
 
     get opportunities() {
