@@ -45,7 +45,7 @@ class Client {
             if (arguments[0].algorithm !== undefined) {
                 this.algorithm = arguments[0].algorithm;
             }
-            if (arguments[0].debug!== undefined) {
+            if (arguments[0].debug !== undefined) {
                 this.debug = arguments[0].debug;
             }
         }
@@ -331,6 +331,27 @@ class Client {
         delete this.host;
         delete this.port;
         delete this.algorithm;
+        delete this.debug;
+    };
+
+    set setHost(newHost) {
+
+        this.host = newHost;
+    };
+
+    set setPort(newPort) {
+
+        this.port = newPort;
+    };
+
+    set setToken(newToken) {
+
+        this.token = newToken;
+    };
+
+    set setSecret(newSecret) {
+
+        this.secret = newSecret;
     };
 
     get opportunities() {
