@@ -347,11 +347,13 @@ class Client {
     set setToken(newToken) {
 
         this.token = newToken;
+        this.credentials.id = this.token;
     };
 
     set setSecret(newSecret) {
 
         this.secret = newSecret;
+        this.credentials.key = this.secret;
     };
 
     get opportunities() {
