@@ -91,7 +91,7 @@ describe('User', () => {
         apiClient.users.create(userData).then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(201);
-            expect(result.data.collection.items.length).to.equal(1);
+            expect(result.data.length).to.equal(1);
             done();
         });
     });

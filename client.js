@@ -235,6 +235,34 @@ class Client {
         };
 
 
+        this.objectifyItems = function (result, resolve, reject) {
+
+            const status = result.response.statusCode.toString();
+            result.data = JSON.parse(JSON.stringify(result.data));
+
+            // Check for 200 or 300 status codes.
+            if (status[0] === '2' || status[0] === '3') {
+
+                CollectionUtil.validateCollection(result.data).
+                then((jsonCollection) => {
+
+                    const items = CollectionUtil.
+                                  objectifyCollection(jsonCollection);
+
+                    result.data = items;
+                    resolve(result);
+                }).catch((err) => {
+
+                    resolve(result);
+                });
+
+            }
+            else {
+                reject(result);
+            }
+        };
+
+
         /**
          * Retrieve an entire Collection+JSON collection
          *
@@ -251,34 +279,13 @@ class Client {
 
                 this.apiRequest(path, 'GET', null).then((result) => {
 
-                    const status = result.response.statusCode.toString();
-                    result.data = JSON.parse(result.data);
-
-                    // Check for 200 or 300 status codes.
-                    if (status[0] === '2' || status[0] === '3') {
-
-                        CollectionUtil.validateCollection(result.data).
-                        then((jsonCollection) => {
-
-                            const items = CollectionUtil.
-                                          objectifyCollection(jsonCollection);
-
-                            result.data = items;
-                            resolve(result);
-                        }).catch((err) => {
-
-                            resolve(result);
-                        });
-
-                    }
-                    else {
-                        reject(result);
-                    }
+                    this.objectifyItems(result, resolve, reject);
                 });
             });
 
             return promise;
         };
+
 
         /**
          * Make a POST request
@@ -711,7 +718,19 @@ class Client {
             create: function (template) {
 
                 const path = that.host + ':' + that.port + '/api/admin/users';
-                return that.postData(path, template);
+
+                const promise = new Promise((resolve, reject) => {
+
+                    that.postData(path, template).then((result) => {
+
+                        that.objectifyItems(result, resolve, reject);
+                    }).catch((result) => {
+
+                        that.objectifyItems(result, resolve, reject);
+                    });
+                });
+
+                return promise;
             }
         };
     };
