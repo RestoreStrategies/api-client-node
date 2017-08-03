@@ -310,14 +310,7 @@ class Client {
 
                 that.apiRequest(path, 'POST', template).then((result) => {
 
-                    const status = result.response.statusCode.toString();
-
-                    if (status[0] === '2' || status[0] === '3') {
-                        resolve(result);
-                    }
-                    else {
-                        reject(result);
-                    }
+                    that.objectifyItems(result, resolve, reject);
                 });
             });
 
@@ -718,19 +711,12 @@ class Client {
             create: function (template) {
 
                 const path = that.host + ':' + that.port + '/api/admin/users';
+                return that.postData(path, template);
+            },
 
-                const promise = new Promise((resolve, reject) => {
-
-                    that.postData(path, template).then((result) => {
-
-                        that.objectifyItems(result, resolve, reject);
-                    }).catch((result) => {
-
-                        that.objectifyItems(result, resolve, reject);
-                    });
-                });
-
-                return promise;
+            keys: {
+                create: function (id, template) {},
+                update: function () {}
             }
         };
     };
