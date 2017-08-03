@@ -526,7 +526,7 @@ class Client {
             */
             template: function (id) {
 
-                const path = that.server +'/api/opportunities/' +
+                const path = that.server + '/api/opportunities/' +
                             id + '/signup';
 
                 const promise = new Promise((resolve, reject) => {
@@ -590,7 +590,7 @@ class Client {
              */
             submit: function (id, template) {
 
-                const path = that.server + '/api/opportunities/' + 
+                const path = that.server + '/api/opportunities/' +
                         id + '/signup';
 
                 return that.postData(path, template);
@@ -708,8 +708,37 @@ class Client {
             },
 
             keys: {
-                create: function (id, template) {},
-                update: function () {}
+                /**
+                 * Create an api key for a user
+                 *
+                 * @param {integer|string} id   The id or uuid of the user
+                 *
+                 * @param {hash} template       A valid Collection+JSON template
+                 *
+                 * Example:
+                 * {
+                 *  template: {
+                 *      data: [
+                 *          { name: 'description', value: 'The key I made' },
+                 *          { name: 'active', value: true }
+                 *      ]
+                 *  }
+                 * }
+                 */ 
+                create: function (id, template) {
+
+                    const path = that.server + '/api/admin/users/' +
+                            id + '/keys';
+
+                    return that.postData(path, template);
+                },
+                update: function (id, token, template) {
+
+                    const path = that.server + '/api/admin/users/' +
+                            id + '/keys/' + token;
+
+                    return that.postData(path, template);
+                }
             }
         };
     };
