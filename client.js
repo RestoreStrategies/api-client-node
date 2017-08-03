@@ -57,6 +57,8 @@ class Client {
             algorithm: this.algorithm
         };
 
+        this.server = this.host + ':' + this.port;
+
         // Generate the Hawk authorization header.
         this.generateHeader = function (path, verb, data) {
 
@@ -330,6 +332,7 @@ class Client {
         delete this.credentials;
         delete this.host;
         delete this.port;
+        delete this.server;
         delete this.algorithm;
         delete this.debug;
     };
@@ -337,11 +340,13 @@ class Client {
     set setHost(newHost) {
 
         this.host = newHost;
+        this.server = this.host + ':' + this.port;
     };
 
     set setPort(newPort) {
 
         this.port = newPort;
+        this.server = this.host + ':' + this.port;
     };
 
     set setToken(newToken) {
@@ -372,9 +377,7 @@ class Client {
             */
             get: function (id) {
 
-                return that.getItem(
-                        that.host + ':' + that.port + '/api/opportunities/' + id
-                );
+                return that.getItem(that.server + '/api/opportunities/' + id);
             },
 
 
@@ -387,9 +390,7 @@ class Client {
             */
             list: function () {
 
-                return that.listItems(
-                        that.host + ':' + that.port + '/api/opportunities'
-                );
+                return that.listItems(that.server + '/api/opportunities');
             }
         };
     };
@@ -525,8 +526,8 @@ class Client {
             */
             template: function (id) {
 
-                const path = that.host + ':' + that.port +
-                                '/api/opportunities/' + id + '/signup';
+                const path = that.server +'/api/opportunities/' +
+                            id + '/signup';
 
                 const promise = new Promise((resolve, reject) => {
 
@@ -589,8 +590,8 @@ class Client {
              */
             submit: function (id, template) {
 
-                const path = that.host + ':' + that.port +
-                            '/api/opportunities/' + id + '/signup';
+                const path = that.server + '/api/opportunities/' + 
+                        id + '/signup';
 
                 return that.postData(path, template);
             }
@@ -612,9 +613,7 @@ class Client {
              */
             get: function (id) {
 
-                return that.getItem(
-                        that.host + ':' + that.port + '/api/organizations/' + id
-                );
+                return that.getItem(that.server + '/api/organizations/' + id);
             },
 
 
@@ -628,9 +627,7 @@ class Client {
              */
             list: function () {
 
-                return that.listItems(
-                        that.host + ':' + that.port + '/api/organizations'
-                );
+                return that.listItems(that.server + '/api/organizations');
             }
 
         };
@@ -651,9 +648,7 @@ class Client {
              */
             get: function (id) {
 
-                return that.getItem(
-                        that.host + ':' + that.port + '/api/admin/users/' + id
-                );
+                return that.getItem(that.server + '/api/admin/users/' + id);
             },
 
 
@@ -667,9 +662,7 @@ class Client {
              */
             list: function () {
 
-                return that.listItems(
-                        that.host + ':' + that.port + '/api/admin/users'
-                );
+                return that.listItems(that.server + '/api/admin/users');
             },
 
             /**
@@ -710,7 +703,7 @@ class Client {
              */
             create: function (template) {
 
-                const path = that.host + ':' + that.port + '/api/admin/users';
+                const path = that.server + '/api/admin/users';
                 return that.postData(path, template);
             },
 
