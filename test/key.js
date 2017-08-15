@@ -47,7 +47,6 @@ describe('Key', () => {
             template
         ).then((result) => {
 
-            console.log(result.data);
             expect(result.data[0].description).to.equal(text);
             done();
         });

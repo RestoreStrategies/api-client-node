@@ -95,4 +95,39 @@ describe('User', () => {
             done();
         });
     });
+
+    it('updates an existing user', (done) => {
+
+        const churchName = 'Community Church ' + Date.now();
+        const email = 'seeded_user@example.com';
+
+        const userData = {
+            template: {
+                data: [
+                    { name: 'email', value: email },
+                    { name: 'church', value: churchName },
+                    { name: 'givenName', value: 'Jon' },
+                    { name: 'familyName', value: 'Doe' },
+                    { name: 'telephone', value: '5127088860' },
+                    { name: 'franchiseCity', value: 'Austin' },
+                    { name: 'streetAddress', value: '105 Main Street' },
+                    { name: 'addressLocality', value: 'Austin' },
+                    { name: 'addressRegion', value: 'Texas' },
+                    { name: 'postalCode', value: '78704' },
+                    { name: 'website', value: 'https://churchexample.com' },
+                    { name: 'planLevel', value: 'Standard' },
+                    { name: 'churchSize', value: 4321 }
+                ]
+            }
+        };
+
+        apiClient.users.update(1, userData).then((result) => {
+
+            const user = result.data[0];
+            expect(result.response.statusCode).to.deep.equal(200);
+            expect(user.email).to.equal(email);
+            expect(user.church).to.equal(churchName);
+            done();
+        });
+    });
 });

@@ -707,6 +707,21 @@ class Client {
                 return that.postData(path, template);
             },
 
+            /**
+             * Update an api user
+             *
+             * @param {integer} id      The id of the user.
+             *
+             * @param {hash} template   A valid Collection+JSON template. This
+             *                          template has the same names & values as
+             *                          users.create
+             */
+            update: function (id, template) {
+
+                const path = that.server + '/api/admin/users/' + id;
+                return that.postData(path, template);
+            },
+
             keys: {
                 /**
                  * Create an api key for a user
@@ -724,7 +739,7 @@ class Client {
                  *      ]
                  *  }
                  * }
-                 */ 
+                 */
                 create: function (id, template) {
 
                     const path = that.server + '/api/admin/users/' +
