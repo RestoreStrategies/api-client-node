@@ -500,11 +500,8 @@ class Client {
     */
     search(parameters) {
 
-        const query = this.paramsToString(parameters);
-
-        return this.listItems(
-                this.host + ':' + this.port + '/api/search?' + query
-        );
+        const query = that.paramsToString(parameters);
+        return that.listItems(that.server + '/api/search?' + query);
     };
 
     get signup() {
