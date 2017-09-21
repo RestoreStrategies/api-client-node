@@ -1,4 +1,4 @@
-FROM node:4
+FROM node:6
 
 MAINTAINER Joseph Simmons 'joseph@austinstone.org'
 ENV REFRESHED 2017-03-01
