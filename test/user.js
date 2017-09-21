@@ -31,7 +31,7 @@ describe('User', () => {
 
     it('should GET a user by id', (done) => {
 
-        apiClient.users.get(1).then((result) => {
+        apiClient.admin.users.get(1).then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
             expect(result.data.id).to.equal('1');
@@ -42,7 +42,7 @@ describe('User', () => {
 
     it('should handle a non-existent user', (done) => {
 
-        apiClient.users.get(10000).catch((result) => {
+        apiClient.admin.users.get(10000).catch((result) => {
 
             const collection = result.data.collection;
 
@@ -56,7 +56,7 @@ describe('User', () => {
 
     it('should GET a list of all users', (done) => {
 
-        apiClient.users.list().then((result) => {
+        apiClient.admin.users.list().then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
             expect(result.data[0].id).to.equal('2');
@@ -88,7 +88,7 @@ describe('User', () => {
             }
         };
 
-        apiClient.users.create(userData).then((result) => {
+        apiClient.admin.users.create(userData).then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(201);
             expect(result.data.length).to.equal(1);
@@ -121,7 +121,7 @@ describe('User', () => {
             }
         };
 
-        apiClient.users.update(1, userData).then((result) => {
+        apiClient.admin.users.update(1, userData).then((result) => {
 
             const user = result.data[0];
             expect(result.response.statusCode).to.deep.equal(200);

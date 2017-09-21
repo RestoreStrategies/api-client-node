@@ -630,126 +630,131 @@ class Client {
         };
     };
 
-    get users() {
+    /**
+     * Administrative features
+     */
+    get admin() {
 
         return {
-            /**
-             * Get a user
-             *
-             * @param {integer} id  The id of the user.
-             *
-             * @returns {promise}   A promise that resolves to an object which
-             *                      contains an HTTP Response object (response),
-             *                      the response body (data), and -- possibly --
-             *                      a client error (error).
-             */
-            get: function (id) {
-
-                return that.getItem(that.server + '/api/admin/users/' + id);
-            },
-
-
-            /**
-             * List all users
-             *
-             * @returns {promise}   A promise that resolves to an object which
-             *                      contains an HTTP Response object (response),
-             *                      the response body (data), and -- possibly --
-             *                      a client error (error).
-             */
-            list: function () {
-
-                return that.listItems(that.server + '/api/admin/users');
-            },
-
-            /**
-             * Create an api user
-             *
-             * @param {hash} template   A valid Collection+JSON template.
-             *
-             * Example:
-             * {
-             *  template: {
-             *       data: [
-             *           { name: 'email', value: 'jon.doe@example.com' },
-             *           { name: 'givenName', value: 'Jon' },
-             *           { name: 'familyName', value: 'Doe' },
-             *           { name: 'telephone', value: '5124567890' },
-             *           { name: 'franchise_city', value: 'Austin' },
-             *           { name: 'street_address', value: '105 Main Street' },
-             *           { name: 'address_locality', value: 'Austin' },
-             *           { name: 'address_region', value: 'Texas' },
-             *           { name: 'postal_code', value: 78704 },
-             *           { name: 'website', value: 'https://churchexample.com' },
-             *           { name: 'uuid', value: 'dcca945c-79a0-45d1-9d73-010c2496a362' },
-             *           { name: 'plan_level', value: 'Basic' },
-             *           { name: 'church', value: 'Community Church' },
-             *           { name: 'church_size', value: 4567 },
-             *           { name: 'active', value: false }
-             *       ]
-             *  }
-             * }
-             * @returns {promise}       A promise that resolves to a hash which
-             *                          contains an HTTP Response object
-             *                          (response), the response body (data),
-             *                          and, possibly, a client error (error).
-             *                          The promise rejects if it does not
-             *                          receive a 2xx or 3xx response from the
-             *                          server, it rejects with the same
-             *                          response, data, & error keys in a hash.
-             */
-            create: function (template) {
-
-                const path = that.server + '/api/admin/users';
-                return that.postData(path, template);
-            },
-
-            /**
-             * Update an api user
-             *
-             * @param {integer} id      The id of the user.
-             *
-             * @param {hash} template   A valid Collection+JSON template. This
-             *                          template has the same names & values as
-             *                          users.create
-             */
-            update: function (id, template) {
-
-                const path = that.server + '/api/admin/users/' + id;
-                return that.postData(path, template);
-            },
-
-            keys: {
+            users: {
                 /**
-                 * Create an api key for a user
+                 * Get a user
                  *
-                 * @param {integer|string} id   The id or uuid of the user
+                 * @param {integer} id  The id of the user.
                  *
-                 * @param {hash} template       A valid Collection+JSON template
+                 * @returns {promise}   A promise that resolves to an object which
+                 *                      contains an HTTP Response object (response),
+                 *                      the response body (data), and -- possibly --
+                 *                      a client error (error).
+                 */
+                get: function (id) {
+
+                    return that.getItem(that.server + '/api/admin/users/' + id);
+                },
+
+
+                /**
+                 * List all users
+                 *
+                 * @returns {promise}   A promise that resolves to an object which
+                 *                      contains an HTTP Response object (response),
+                 *                      the response body (data), and -- possibly --
+                 *                      a client error (error).
+                 */
+                list: function () {
+
+                    return that.listItems(that.server + '/api/admin/users');
+                },
+
+                /**
+                 * Create an api user
+                 *
+                 * @param {hash} template   A valid Collection+JSON template.
                  *
                  * Example:
                  * {
                  *  template: {
-                 *      data: [
-                 *          { name: 'description', value: 'The key I made' },
-                 *          { name: 'active', value: true }
-                 *      ]
+                 *       data: [
+                 *           { name: 'email', value: 'jon.doe@example.com' },
+                 *           { name: 'givenName', value: 'Jon' },
+                 *           { name: 'familyName', value: 'Doe' },
+                 *           { name: 'telephone', value: '5124567890' },
+                 *           { name: 'franchise_city', value: 'Austin' },
+                 *           { name: 'street_address', value: '105 Main Street' },
+                 *           { name: 'address_locality', value: 'Austin' },
+                 *           { name: 'address_region', value: 'Texas' },
+                 *           { name: 'postal_code', value: 78704 },
+                 *           { name: 'website', value: 'https://churchexample.com' },
+                 *           { name: 'uuid', value: 'dcca945c-79a0-45d1-9d73-010c2496a362' },
+                 *           { name: 'plan_level', value: 'Basic' },
+                 *           { name: 'church', value: 'Community Church' },
+                 *           { name: 'church_size', value: 4567 },
+                 *           { name: 'active', value: false }
+                 *       ]
                  *  }
                  * }
+                 * @returns {promise}       A promise that resolves to a hash which
+                 *                          contains an HTTP Response object
+                 *                          (response), the response body (data),
+                 *                          and, possibly, a client error (error).
+                 *                          The promise rejects if it does not
+                 *                          receive a 2xx or 3xx response from the
+                 *                          server, it rejects with the same
+                 *                          response, data, & error keys in a hash.
                  */
-                create: function (id, template) {
+                create: function (template) {
 
-                    const path = that.server + '/api/admin/users/' +
-                            id + '/keys';
-
+                    const path = that.server + '/api/admin/users';
                     return that.postData(path, template);
                 },
-                update: function (id, token, template) {
 
-                    const path = that.server + '/api/admin/users/' +
-                            id + '/keys/' + token;
+                /**
+                 * Update an api user
+                 *
+                 * @param {integer} id      The id of the user.
+                 *
+                 * @param {hash} template   A valid Collection+JSON template. This
+                 *                          template has the same names & values as
+                 *                          users.create
+                 */
+                update: function (id, template) {
 
+                    const path = that.server + '/api/admin/users/' + id;
                     return that.postData(path, template);
+                },
+
+                keys: {
+                    /**
+                     * Create an api key for a user
+                     *
+                     * @param {integer|string} id   The id or uuid of the user
+                     *
+                     * @param {hash} template       A valid Collection+JSON template
+                     *
+                     * Example:
+                     * {
+                     *  template: {
+                     *      data: [
+                     *          { name: 'description', value: 'The key I made' },
+                     *          { name: 'active', value: true }
+                     *      ]
+                     *  }
+                     * }
+                     */
+                    create: function (id, template) {
+
+                        const path = that.server + '/api/admin/users/' +
+                                id + '/keys';
+
+                        return that.postData(path, template);
+                    },
+                    update: function (id, token, template) {
+
+                        const path = that.server + '/api/admin/users/' +
+                                id + '/keys/' + token;
+
+                        return that.postData(path, template);
+                    }
                 }
             }
         };

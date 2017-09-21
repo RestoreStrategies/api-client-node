@@ -42,7 +42,7 @@ describe('Key', () => {
             }
         };
 
-        apiClient.users.keys.create(
+        apiClient.admin.users.keys.create(
             1,
             template
         ).then((result) => {
