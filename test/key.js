@@ -43,7 +43,7 @@ describe('Key', () => {
         };
 
         apiClient.users.keys.create(
-            'd01a20fb-179f-473d-af73-1a036e728f4c',
+            1,
             template
         ).then((result) => {
 

@@ -59,7 +59,7 @@ describe('User', () => {
         apiClient.users.list().then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
-            expect(result.data[0].id).to.equal('1');
+            expect(result.data[0].id).to.equal('2');
             expect(result.data.length).to.above(1);
             expect(result.error).to.be.null();
             done();

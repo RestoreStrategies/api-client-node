@@ -32,10 +32,10 @@ describe('Organization', () => {
 
     it('should GET an organization by id', (done) => {
 
-        apiClient.organizations.get(1).then((result) => {
+        apiClient.organizations.get(2).then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
-            expect(result.data.id).to.equal('1');
+            expect(result.data.id).to.equal('2');
             expect(result.error).to.be.null();
             done();
         });
@@ -62,7 +62,7 @@ describe('Organization', () => {
         apiClient.organizations.list().then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
-            expect(result.data[0].id).to.equal('1');
+            expect(result.data[0].id).to.equal('2');
             expect(result.error).to.be.null();
             done();
         });
