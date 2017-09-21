@@ -755,6 +755,37 @@ class Client {
 
                         return that.postData(path, template);
                     }
+                },
+
+                signups: {
+
+                    /**
+                     * Get a particular signup associated with a particular API
+                     * user.
+                     *
+                     * @param {integer} user_id The id of the API user
+                     *
+                     * @param {integer} id      The id of the signup
+                     */
+                    get: function (user_id, id) {
+
+                        const path = '/api/admin/users/' + user_id +
+                                    '/signups/' + id;
+
+                        return that.getItem(that.server + path);
+                    },
+
+                    /**
+                     * List all the signups associated with a particular API
+                     * user.
+                     *
+                     * @param {integer} user_id The id of the API user
+                     */
+                    list: function (user_id) {
+
+                        const path = '/api/admin/users/' + user_id + '/signups';
+                        return that.listItems(that.server + path);
+                    }
                 }
             }
         };
