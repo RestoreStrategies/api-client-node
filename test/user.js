@@ -96,6 +96,39 @@ describe('User', () => {
         });
     });
 
+    it('should create a user with reseller', (done) => {
+
+        const userData = {
+            template: {
+                data: [
+                    { name: 'email', value: Date.now() + '@example.com' },
+                    { name: 'givenName', value: 'Jon' },
+                    { name: 'familyName', value: 'Doe' },
+                    { name: 'telephone', value: '5127088860' },
+                    { name: 'franchiseCity', value: 'Austin' },
+                    { name: 'streetAddress', value: '105 Main Street' },
+                    { name: 'addressLocality', value: 'Austin' },
+                    { name: 'addressRegion', value: 'Texas' },
+                    { name: 'postalCode', value: '78704' },
+                    { name: 'website', value: 'https://churchexample.com' },
+                    { name: 'planLevel', value: 'Standard' },
+                    { name: 'church', value: 'Community Church' },
+                    { name: 'churchSize', value: 4321 },
+                    { name: 'resellerId', value: 1 }
+                ]
+            }
+        };
+
+        apiClient.admin.users.create(userData).then((result) => {
+
+            const user = result.data[0];
+            expect(user.reseller_id).to.equal('1');
+            expect(result.response.statusCode).to.deep.equal(201);
+            expect(result.data.length).to.equal(1);
+            done();
+        });
+    });
+
     it('updates an existing user', (done) => {
 
         const churchName = 'Community Church ' + Date.now();
