@@ -786,6 +786,23 @@ class Client {
                         const path = '/api/admin/users/' + user_id + '/signups';
                         return that.listItems(that.server + path);
                     }
+                },
+
+                organizations: {
+
+                    /**
+                     * List all the organizations that the API user has
+                     * allowed.
+                     *
+                     * @param {integer} user_id The id of the API user
+                     */
+                    list: function (user_id) {
+
+                        const path = '/api/admin/users/' + user_id +
+                            '/organizations';
+
+                        return that.listItems(that.server + path);
+                    }
                 }
             }
         };
