@@ -319,6 +319,17 @@ class Client {
             return promise;
         };
 
+        this.deleteItem = function (path) {
+
+            return new Promise((resolve, reject) => {
+
+                that.apiRequest(path, 'DELETE').then((result) => {
+
+                    that.objectifyItems(result, resolve, reject);
+                });
+            });
+        };
+
         that = this;
     };
 
@@ -802,6 +813,21 @@ class Client {
                             '/organizations';
 
                         return that.listItems(that.server + path);
+                    },
+
+                    /**
+                     * Blacklist an organization for an API user.
+                     *
+                     * @param {integer} user_id The id of the API user
+                     *
+                     * @param {integer} id      The id of the organization
+                     */
+                    remove: function (user_id, id) {
+
+                        const path = '/api/admin/users/' + user_id +
+                            '/organizations/' + id;
+
+                        return that.deleteItem(that.server + path);
                     }
                 }
             }
