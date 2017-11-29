@@ -78,6 +78,7 @@ class Client {
             if (this.debug) {
                 console.log('credentails used ', this.credentials);
             }
+
             return Hawk.client.header(path, verb,
                 { credentials: this.credentials, ext: extString });
 
@@ -124,7 +125,7 @@ class Client {
 
                     resolve({
                         response: response,
-                        data: body,
+                        data: body || '',
                         error: error
                     });
                 });
@@ -241,7 +242,6 @@ class Client {
 
             const status = result.response.statusCode.toString();
             result.data = JSON.parse(JSON.stringify(result.data));
-
             // Check for 200 or 300 status codes.
             if (status[0] === '2' || status[0] === '3') {
 
@@ -816,7 +816,11 @@ class Client {
                     },
 
                     /**
-                     * Blacklist an organization for an API user.
+                     * Remove an organization from users.organizations.list by
+                     * blacklisting it.
+                     *
+                     * Volunteer opportunities associated with removed
+                     * organizations will not be accessible to the API user.
                      *
                      * @param {integer} user_id The id of the API user
                      *
@@ -828,6 +832,33 @@ class Client {
                             '/organizations/' + id;
 
                         return that.deleteItem(that.server + path);
+                    },
+
+                    /**
+                     * Add a blacklisted organization into
+                     * users.organizations.list by removing it from the
+                     * blacklist. Note this organization must actually exist in
+                     * general, as this function does not created an
+                     * organization, rather it modifies a relationship.
+                     *
+                     * @param {integer} user_id The id of the API user
+                     *
+                     * @param {integer} id      The id of the organization
+                     */
+                    add: function (user_id, id) {
+
+                        const template = {
+                            template: {
+                                data: [
+                                    { name: 'id', value: id }
+                                ]
+                            }
+                        };
+
+                        const path = that.server + '/api/admin/users/' +
+                            user_id + '/organizations';
+
+                        return that.postData(path, template);
                     }
                 }
             }
