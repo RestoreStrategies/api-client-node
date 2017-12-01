@@ -816,6 +816,20 @@ class Client {
                     },
 
                     /**
+                     * List all the organizations that the API user has
+                     * blacklisted.
+                     *
+                     * @param {integer} user_id The id of the API user
+                     */
+                    blacklist: function (user_id) {
+
+                        const path = '/api/admin/users/' + user_id +
+                            '/organizations/blacklist';
+
+                        return that.listItems(that.server + path);
+                    },
+
+                    /**
                      * Remove an organization from users.organizations.list by
                      * blacklisting it.
                      *

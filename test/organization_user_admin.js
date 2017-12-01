@@ -43,6 +43,15 @@ describe('Organization admin', () => {
         });
     });
 
+    it('lists organizations blacklisted by an API user', (done) => {
+
+        apiClient.admin.users.organizations.blacklist(1).then((result) => {
+
+            expect(result.data.length).to.deep.equal(1);
+            done();
+        });
+    });
+
     it('removes an organization for an API user\'s blacklist', (done) => {
 
         apiClient.admin.users.organizations.add(1, 2).then((result) => {
