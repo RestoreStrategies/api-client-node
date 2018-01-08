@@ -101,6 +101,7 @@ class Client {
          */
         this.apiRequest = function (path, verb, json) {
 
+            path = this.server + path;
             const hawkHeader = this.generateHeader(path, verb);
 
             const options = {
@@ -388,7 +389,7 @@ class Client {
             */
             get: function (id) {
 
-                return that.getItem(that.server + '/api/opportunities/' + id);
+                return that.getItem('/api/opportunities/' + id);
             },
 
 
@@ -401,7 +402,7 @@ class Client {
             */
             list: function () {
 
-                return that.listItems(that.server + '/api/opportunities');
+                return that.listItems('/api/opportunities');
             }
         };
     };
@@ -512,7 +513,7 @@ class Client {
     search(parameters) {
 
         const query = that.paramsToString(parameters);
-        return that.listItems(that.server + '/api/search?' + query);
+        return that.listItems('/api/search?' + query);
     };
 
     get signup() {
@@ -534,7 +535,7 @@ class Client {
             */
             template: function (id) {
 
-                const path = that.server + '/api/opportunities/' +
+                const path = '/api/opportunities/' +
                             id + '/signup';
 
                 const promise = new Promise((resolve, reject) => {
@@ -598,7 +599,7 @@ class Client {
              */
             submit: function (id, template) {
 
-                const path = that.server + '/api/opportunities/' +
+                const path = '/api/opportunities/' +
                         id + '/signup';
 
                 return that.postData(path, template);
@@ -621,7 +622,7 @@ class Client {
              */
             get: function (id) {
 
-                return that.getItem(that.server + '/api/organizations/' + id);
+                return that.getItem('/api/organizations/' + id);
             },
 
 
@@ -635,7 +636,7 @@ class Client {
              */
             list: function () {
 
-                return that.listItems(that.server + '/api/organizations');
+                return that.listItems('/api/organizations');
             }
 
         };
@@ -660,7 +661,7 @@ class Client {
                  */
                 get: function (id) {
 
-                    return that.getItem(that.server + '/api/admin/users/' + id);
+                    return that.getItem('/api/admin/users/' + id);
                 },
 
 
@@ -674,7 +675,7 @@ class Client {
                  */
                 list: function () {
 
-                    return that.listItems(that.server + '/api/admin/users');
+                    return that.listItems('/api/admin/users');
                 },
 
                 /**
@@ -715,7 +716,7 @@ class Client {
                  */
                 create: function (template) {
 
-                    const path = that.server + '/api/admin/users';
+                    const path = '/api/admin/users';
                     return that.postData(path, template);
                 },
 
@@ -730,7 +731,7 @@ class Client {
                  */
                 update: function (id, template) {
 
-                    const path = that.server + '/api/admin/users/' + id;
+                    const path = '/api/admin/users/' + id;
                     return that.postData(path, template);
                 },
 
@@ -754,14 +755,14 @@ class Client {
                      */
                     create: function (id, template) {
 
-                        const path = that.server + '/api/admin/users/' +
+                        const path = '/api/admin/users/' +
                                 id + '/keys';
 
                         return that.postData(path, template);
                     },
                     update: function (id, token, template) {
 
-                        const path = that.server + '/api/admin/users/' +
+                        const path = '/api/admin/users/' +
                                 id + '/keys/' + token;
 
                         return that.postData(path, template);
@@ -783,7 +784,7 @@ class Client {
                         const path = '/api/admin/users/' + user_id +
                                     '/signups/' + id;
 
-                        return that.getItem(that.server + path);
+                        return that.getItem(path);
                     },
 
                     /**
@@ -795,7 +796,7 @@ class Client {
                     list: function (user_id) {
 
                         const path = '/api/admin/users/' + user_id + '/signups';
-                        return that.listItems(that.server + path);
+                        return that.listItems(path);
                     }
                 },
 
@@ -812,7 +813,7 @@ class Client {
                         const path = '/api/admin/users/' + user_id +
                             '/organizations';
 
-                        return that.listItems(that.server + path);
+                        return that.listItems(path);
                     },
 
                     /**
@@ -826,7 +827,7 @@ class Client {
                         const path = '/api/admin/users/' + user_id +
                             '/organizations/blacklist';
 
-                        return that.listItems(that.server + path);
+                        return that.listItems(path);
                     },
 
                     /**
@@ -845,7 +846,7 @@ class Client {
                         const path = '/api/admin/users/' + user_id +
                             '/organizations/' + id;
 
-                        return that.deleteItem(that.server + path);
+                        return that.deleteItem(path);
                     },
 
                     /**
@@ -869,7 +870,7 @@ class Client {
                             }
                         };
 
-                        const path = that.server + '/api/admin/users/' +
+                        const path = '/api/admin/users/' +
                             user_id + '/organizations';
 
                         return that.postData(path, template);
