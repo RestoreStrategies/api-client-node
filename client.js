@@ -373,6 +373,25 @@ class Client {
         this.credentials.key = this.secret;
     };
 
+
+
+    /**************************** API FUNCTIONS ********************************
+     *
+     * All API functions return a promise that resolves into an object with 3
+     * keys:
+     *
+     *  * response  A Response object, this contains the raw HTTP response
+     *  * data      An objectified version of the HTTP body, if available. This
+     *              is probably the piece you want to use.
+     *  * error     An error object, if an error occurred
+     *
+     * The API functions will reject if they do not receive a 2xx or 3xx level
+     * HTTP status from the server. However they reject with the same object
+     * ({ response, data, error }) they resolve to.
+     **************************************************************************/
+
+
+
     get opportunities() {
 
         return {
@@ -380,12 +399,6 @@ class Client {
             * Get an opportunity
             *
             * @param {integer} id           The id of the opportunity.
-            *
-            * @returns {promise} promise    A promise that resolves to result
-            *                               hash which contains an HTTP Response
-            *                               object (response), the opportunity
-            *                               object (data), and, possibly, an
-            *                               error (error).
             */
             get: function (id) {
 
@@ -396,9 +409,6 @@ class Client {
             /**
             * List all opportunities
             *
-            * @returns {promise}    A promise that resolves to result hash
-            * which contains an HTTP Response object (response), an array of
-            * opportunity objects (data), and, possibly, an error (error).
             */
             list: function () {
 
@@ -504,11 +514,6 @@ class Client {
     *                   region: ['South, 'Central'],
     *                   issues: ['Education', 'Children/Youth']
     *          }
-    *
-    *
-    * @returns {promise} promise    A promise that resolves to a result hash
-    * which contains an HTTP Response object (response), an array of
-    * opportunity objects (data), and, possibly, an error (error).
     */
     search(parameters) {
 
@@ -523,15 +528,6 @@ class Client {
             * Get a signup template
             *
             * @param {integer} id   The id of an opportunity
-            *
-            * @returns {promise}    A promise that resolves to a hash which
-            *                       contains an HTTP Response object (response),
-            *                       the template if it exists (data), and,
-            *                       possibly, a client error (error). The
-            *                       promise rejects if it does not receive a 2xx
-            *                       or 3xx response from the server, it rejects
-            *                       with the same response, data, & error keys
-            *                       in a hash.
             */
             template: function (id) {
 
@@ -587,15 +583,6 @@ class Client {
              *       ]
              *  }
              * }
-             *
-             * @returns {promise}       A promise that resolves to a hash which
-             *                          contains an HTTP Response object
-             *                          (response), the response body (data),
-             *                          and, possibly, a client error (error).
-             *                          The promise rejects if it does not
-             *                          receive a 2xx or 3xx response from the
-             *                          server, it rejects with the same
-             *                          response, data, & error keys in a hash.
              */
             submit: function (id, template) {
 
@@ -614,11 +601,6 @@ class Client {
              * Get an organization
              *
              * @param {integer} id  The id of the organization.
-             *
-             * @returns {promise}   A promise that resolves to an object which
-             *                      contains an HTTP Response object (response),
-             *                      the response body (data), and -- possibly --
-             *                      a client error (error).
              */
             get: function (id) {
 
@@ -628,11 +610,6 @@ class Client {
 
             /**
              * List all organizations
-             *
-             * @returns {promise}   A promise that resolves to an object which
-             *                      contains an HTTP Response object (response),
-             *                      the response body (data), and -- possibly --
-             *                      a client error (error).
              */
             list: function () {
 
@@ -653,11 +630,6 @@ class Client {
                  * Get a user
                  *
                  * @param {integer} id  The id of the user.
-                 *
-                 * @returns {promise}   A promise that resolves to an object which
-                 *                      contains an HTTP Response object (response),
-                 *                      the response body (data), and -- possibly --
-                 *                      a client error (error).
                  */
                 get: function (id) {
 
@@ -667,11 +639,6 @@ class Client {
 
                 /**
                  * List all users
-                 *
-                 * @returns {promise}   A promise that resolves to an object which
-                 *                      contains an HTTP Response object (response),
-                 *                      the response body (data), and -- possibly --
-                 *                      a client error (error).
                  */
                 list: function () {
 
@@ -705,14 +672,6 @@ class Client {
                  *       ]
                  *  }
                  * }
-                 * @returns {promise}       A promise that resolves to a hash which
-                 *                          contains an HTTP Response object
-                 *                          (response), the response body (data),
-                 *                          and, possibly, a client error (error).
-                 *                          The promise rejects if it does not
-                 *                          receive a 2xx or 3xx response from the
-                 *                          server, it rejects with the same
-                 *                          response, data, & error keys in a hash.
                  */
                 create: function (template) {
 
