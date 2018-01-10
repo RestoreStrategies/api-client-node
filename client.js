@@ -834,6 +834,62 @@ class Client {
 
                         return that.postData(path, template);
                     }
+                },
+
+                opportunities: {
+
+                    /**
+                     * Add an opportunity to the list of an API user's featured
+                     * opportunities
+                     *
+                     * @param {integer} user_id The id of the API user
+                     *
+                     * @param {integer} id      The id of the opportunity
+                     */
+                    feature: function (user_id, id) {
+
+                        const template = {
+                            template: {
+                                data: [
+                                    { name: 'id', value: id }
+                                ]
+                            }
+                        };
+
+                        const path = '/api/admin/users/' + user_id +
+                            '/opportunities';
+
+                        return that.postData(path, template);
+                    },
+
+                    /**
+                     * Remove an opportunity from the list of an API user's
+                     * featured opportunities
+                     *
+                     * @param {integer} user_id The id of the API user
+                     *
+                     * @param {integer} id      The id of the opportunity
+                     */
+                    unfeature: function (user_id, id) {
+
+                        const path = '/api/admin/users/' + user_id +
+                            '/opportunities/' + id;
+
+                        return that.deleteItem(path);
+                    },
+
+                    /**
+                     * List all the opportunities the API user has featured
+                     *
+                     * @param {integer} user_id The id of the API user
+                     */
+                    featured: function (user_id) {
+
+                        const path = '/api/admin/users/' + user_id +
+                            '/opportunities';
+
+                        return that.listItems(path);
+                    }
                 }
             }
         };
