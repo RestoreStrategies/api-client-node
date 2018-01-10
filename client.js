@@ -413,6 +413,15 @@ class Client {
             list: function () {
 
                 return that.listItems('/api/opportunities');
+            },
+
+
+            /**
+             * List featured opportunities
+             */
+            featured: function () {
+
+                return that.listItems('/api/opportunities/featured');
             }
         };
     };
