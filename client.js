@@ -728,12 +728,11 @@ class Client {
 
                         return that.postData(path, template);
                     },
-                    update: function (id, token, template) {
+                    list: function (id) {
 
-                        const path = '/api/admin/users/' +
-                                id + '/keys/' + token;
+                        const path = '/api/admin/users/' + id + '/keys';
 
-                        return that.postData(path, template);
+                        return that.listItems(path);
                     }
                 },
 

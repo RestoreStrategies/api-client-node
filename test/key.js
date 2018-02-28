@@ -52,5 +52,11 @@ describe('Key', () => {
         });
     });
 
-    it('updates credentials');
+    it('lists credentials', (done) => {
+
+        apiClient.admin.users.keys.list(1).then((result) => {
+            expect(result.data.length).to.be.above(7);
+            done();
+        });
+    });
 });
