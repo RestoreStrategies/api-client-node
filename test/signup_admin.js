@@ -30,7 +30,7 @@ describe('Signup admin', () => {
         apiClient.admin.users.signups.list(1).then((result) => {
 
             expect(result.data.length).to.be.above(3);
-            expect(result.data[0].church).to.equal('Test Church Name');
+            expect(result.data[0].opportunity_name).to.equal('Foster Care Baby Care Part 1');
             done();
         });
     });

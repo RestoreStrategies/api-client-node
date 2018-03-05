@@ -59,7 +59,7 @@ describe('Opportunity', () => {
         apiClient.opportunities.list().then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
-            expect(result.data[0].id).to.equal('3');
+            expect(result.data[0].id).to.equal('1');
             expect(result.error).to.be.null();
             done();
         });
