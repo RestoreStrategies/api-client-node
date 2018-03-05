@@ -721,18 +721,39 @@ class Client {
                      *  }
                      * }
                      */
-                    create: function (id, template) {
+                    create: function (user_id, template) {
 
                         const path = '/api/admin/users/' +
-                                id + '/keys';
+                                user_id + '/keys';
 
                         return that.postData(path, template);
                     },
-                    list: function (id) {
 
-                        const path = '/api/admin/users/' + id + '/keys';
+                    /**
+                     * List a user's API keys
+                     *
+                     * @param {integer} user_id The id of the API user
+                     */
+                    list: function (user_id) {
+
+                        const path = '/api/admin/users/' + user_id + '/keys';
 
                         return that.listItems(path);
+                    },
+
+                    /**
+                     * Deactivate an api key for a user
+                     *
+                     * @param {integer} user_id The id of the API user
+                     *
+                     * @param {integer} id      The id of the key
+                     */
+                    deactivate: function (user_id, id) {
+
+                        const path = '/api/admin/users/' + user_id +
+                            '/keys/' + id;
+
+                        return that.deleteItem(path);
                     }
                 },
 

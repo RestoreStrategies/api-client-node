@@ -4,11 +4,13 @@ const Lab = require('lab');
 const Code = require('code');
 const Client = require('../client.js');
 let apiClient;
+let key;
 
 const lab = exports.lab = Lab.script();
 const describe = lab.describe;
 const it = lab.it;
 const before = lab.before;
+const beforeEach = lab.beforeEach;
 const expect = Code.expect;
 
 describe('Key', () => {
@@ -26,7 +28,17 @@ describe('Key', () => {
             host: host,
             port: port
         });
+
         done();
+    });
+
+    beforeEach((done) => {
+
+        apiClient.admin.users.keys.list(1).then((result) => {
+
+            key = result.data[result.data.length - 1];
+            done();
+        });
     });
 
     it('creates credentials', (done) => {
@@ -55,7 +67,17 @@ describe('Key', () => {
     it('lists credentials', (done) => {
 
         apiClient.admin.users.keys.list(1).then((result) => {
+
             expect(result.data.length).to.be.above(7);
+            done();
+        });
+    });
+
+    it('deactivates credentials', (done) => {
+
+        apiClient.admin.users.keys.deactivate(1, key.id).then((result) => {
+
+            expect(result.response.statusCode).to.equal(204);
             done();
         });
     });
