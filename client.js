@@ -919,6 +919,23 @@ class Client {
 
                         return that.listItems(path);
                     }
+                },
+
+                customers: {
+
+                    /**
+                     * List all the signups that belong to an API user's
+                     * customers
+                     *
+                     * @param {integer} user_id The id of the API user
+                     */
+                    signups: function (user_id) {
+
+                        const path = '/api/admin/users/' + user_id +
+                            '/customers/signups';
+
+                        return that.listItems(path);
+                    }
                 }
             }
         };
