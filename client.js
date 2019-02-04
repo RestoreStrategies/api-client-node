@@ -634,6 +634,68 @@ class Client {
     get admin() {
 
         return {
+            organizations: {
+                opportunities: {
+
+                    /**
+                     * Get an opportunity associated with an organization
+                     *
+                     * @param {integer} organization_id An organization's id
+                     *
+                     * @param {integer} opportunity_id  The opportunity's id
+                     */
+                    get: function(organization_id, opportunity_id) {
+
+                        return that.getItem(
+                            `/api/admin/organizations/${organization_id}/opportunities/${opportunity_id}`
+                        );
+                    },
+
+                    /**
+                     * Get all the opportunities associated with an organization
+                     *
+                     * @param {integer} organization_id An organization's id
+                     */
+                    list: function(organization_id) {
+
+                        return that.listItems(
+                            `/api/admin/organizations/${organization_id}/opportunities`
+                        );
+                    },
+
+                    /**
+                     * Create an opportunity for an organization
+                     *
+                     * @param {integer} organization_id An organization's id
+                     *
+                     * @param {object} template A valid Collection+JSON template
+                     */
+                    create: function(organization_id, template) {
+
+                        return that.postData(
+                            `/api/admin/organizations/${organization_id}/opportunities`,
+                            template
+                        );
+                    },
+
+                    /**
+                     * Update an opportunity for an organization
+                     *
+                     * @param {integer} organization_id An organization's id
+                     *
+                     * @param {integer} opportunity_id  The opportunity's id
+                     *
+                     * @param {object} template A valid Collection+JSON template
+                     */
+                    update: function(organization_id, opportunity_id, template) {
+
+                        return that.postData(
+                            `/api/admin/organizations/${organization_id}/opportunities/${opportunity_id}`,
+                            template
+                        );
+                    }
+                }
+            },
             users: {
                 /**
                  * Get a user
