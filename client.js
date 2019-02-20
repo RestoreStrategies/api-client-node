@@ -635,6 +635,20 @@ class Client {
 
         return {
             organizations: {
+                people: {
+
+                    /**
+                     * Get all the people associated with an organization
+                     *
+                     * @param {integer} organization_id An organization's id
+                     */
+                    list: function(organization_id) {
+
+                        return that.listItems(
+                            `/api/admin/organizations/${organization_id}/people`
+                        );
+                    },
+                },
                 opportunities: {
 
                     /**
