@@ -405,7 +405,7 @@ class Client {
                 let path = '/api/opportunities/' + id;
 
                 if(city !== null) {
-                    path += '?=' + encodeURIComponent(city);
+                    path += '?city=' + encodeURIComponent(city);
                 }
 
                 return that.getItem(path);
@@ -421,7 +421,7 @@ class Client {
                 let path = '/api/opportunities';
 
                 if(city !== null) {
-                    path += '?=' + encodeURIComponent(city);
+                    path += '?city=' + encodeURIComponent(city);
                 }
 
                 return that.listItems(path);
