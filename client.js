@@ -400,9 +400,15 @@ class Client {
             *
             * @param {integer} id           The id of the opportunity.
             */
-            get: function (id) {
+            get: function (id, city = null) {
 
-                return that.getItem('/api/opportunities/' + id);
+                let path = '/api/opportunities/' + id;
+
+                if(city !== null) {
+                    path += '?=' + encodeURIComponent(city);
+                }
+
+                return that.getItem(path);
             },
 
 
@@ -410,9 +416,15 @@ class Client {
             * List all opportunities
             *
             */
-            list: function () {
+            list: function (city = null) {
 
-                return that.listItems('/api/opportunities');
+                let path = '/api/opportunities';
+
+                if(city !== null) {
+                    path += '?=' + encodeURIComponent(city);
+                }
+
+                return that.listItems(path);
             },
 
 
