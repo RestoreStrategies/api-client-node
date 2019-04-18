@@ -536,9 +536,14 @@ class Client {
     *                   issues: ['Education', 'Children/Youth']
     *          }
     */
-    search(parameters) {
+    search(parameters, city = null) {
 
-        const query = that.paramsToString(parameters);
+        let query = that.paramsToString(parameters);
+
+        if(city !== null) {
+            query += '&city=' + encodeURIComponent(city);
+        }
+
         return that.listItems('/api/search?' + query);
     };
 
