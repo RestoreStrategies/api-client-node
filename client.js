@@ -404,7 +404,7 @@ class Client {
 
                 let path = '/api/opportunities/' + id;
 
-                if(city !== null) {
+                if (city !== null) {
                     path += '?city=' + encodeURIComponent(city);
                 }
 
@@ -420,7 +420,7 @@ class Client {
 
                 let path = '/api/opportunities';
 
-                if(city !== null) {
+                if (city !== null) {
                     path += '?city=' + encodeURIComponent(city);
                 }
 
@@ -540,7 +540,7 @@ class Client {
 
         let query = that.paramsToString(parameters);
 
-        if(city !== null) {
+        if (city !== null) {
             query += '&city=' + encodeURIComponent(city);
         }
 
@@ -659,12 +659,12 @@ class Client {
                      *
                      * @param {integer} organization_id An organization's id
                      */
-                    list: function(organization_id) {
+                    list: function (organization_id) {
 
                         return that.listItems(
                             `/api/admin/organizations/${organization_id}/people`
                         );
-                    },
+                    }
                 },
                 opportunities: {
 
@@ -675,7 +675,7 @@ class Client {
                      *
                      * @param {integer} opportunity_id  The opportunity's id
                      */
-                    get: function(organization_id, opportunity_id) {
+                    get: function (organization_id, opportunity_id) {
 
                         return that.getItem(
                             `/api/admin/organizations/${organization_id}/opportunities/${opportunity_id}`
@@ -687,7 +687,7 @@ class Client {
                      *
                      * @param {integer} organization_id An organization's id
                      */
-                    list: function(organization_id) {
+                    list: function (organization_id) {
 
                         return that.listItems(
                             `/api/admin/organizations/${organization_id}/opportunities`
@@ -701,7 +701,7 @@ class Client {
                      *
                      * @param {object} template A valid Collection+JSON template
                      */
-                    create: function(organization_id, template) {
+                    create: function (organization_id, template) {
 
                         return that.postData(
                             `/api/admin/organizations/${organization_id}/opportunities`,
@@ -718,7 +718,7 @@ class Client {
                      *
                      * @param {object} template A valid Collection+JSON template
                      */
-                    update: function(organization_id, opportunity_id, template) {
+                    update: function (organization_id, opportunity_id, template) {
 
                         return that.postData(
                             `/api/admin/organizations/${organization_id}/opportunities/${opportunity_id}`,
