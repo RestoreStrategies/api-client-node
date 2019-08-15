@@ -431,9 +431,15 @@ class Client {
             /**
              * List featured opportunities
              */
-            featured: function () {
+            featured: function (city = null) {
 
-                return that.listItems('/api/opportunities/featured');
+                let path = '/api/opportunities/featured';
+
+                if (city !== null) {
+                    path += '?city=' + encodeURIComponent(city);
+                }
+
+                return that.listItems(path);
             }
         };
     };
@@ -610,10 +616,14 @@ class Client {
              *  }
              * }
              */
-            submit: function (id, template) {
+            submit: function (id, template, city = null) {
 
-                const path = '/api/opportunities/' +
+                let path = '/api/opportunities/' +
                         id + '/signup';
+
+                if (city !== null) {
+                    path += '?city=' + encodeURIComponent(city);
+                }
 
                 return that.postData(path, template);
             }

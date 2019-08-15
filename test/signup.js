@@ -92,4 +92,23 @@ describe('Signup', () => {
             done();
         });
     });
+
+    it('should submit a signup for a different city, if asked', (done) => {
+
+        apiClient.signup.submit(2, templateData, 'Waco').then((result) => {
+
+            const status = result.response.statusCode;
+            expect(status).to.equal(202);
+            done();
+        });
+    });
+
+    it('should not submit a signup for a different city, if not asked', (done) => {
+
+        apiClient.signup.submit(2, templateData).catch((error) => {
+
+            expect(error.response.statusCode).to.equal(404);
+            done();
+        });
+    });
 });
