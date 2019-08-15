@@ -62,7 +62,7 @@ describe('Organization', () => {
         apiClient.organizations.list().then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
-            expect(result.data[0].id).to.equal('2');
+            expect(result.data[0].id).to.equal('3');
             expect(result.error).to.be.null();
             done();
         });

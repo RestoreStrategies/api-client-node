@@ -11,7 +11,7 @@ const it = lab.it;
 const before = lab.before;
 const expect = Code.expect;
 
-describe('User', () => {
+describe('User', { timeout: 5000 }, () => {
 
     before((done) => {
 
@@ -42,7 +42,7 @@ describe('User', () => {
 
     it('should handle a non-existent user', (done) => {
 
-        apiClient.admin.users.get(10000).catch((result) => {
+        apiClient.admin.users.get(1000000000).catch((result) => {
 
             const collection = result.data.collection;
 
@@ -59,7 +59,7 @@ describe('User', () => {
         apiClient.admin.users.list().then((result) => {
 
             expect(result.response.statusCode).to.deep.equal(200);
-            expect(result.data[0].id).to.equal('2');
+            expect(result.data[0].id).to.equal('3');
             expect(result.data.length).to.above(1);
             expect(result.error).to.be.null();
             done();

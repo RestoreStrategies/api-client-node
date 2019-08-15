@@ -66,9 +66,15 @@ describe('Key', () => {
 
     it('lists credentials', (done) => {
 
+
         apiClient.admin.users.keys.list(1).then((result) => {
 
-            expect(result.data.length).to.be.above(7);
+            result.data.forEach((key) => {
+
+                expect(key.secret).to.not.be.null();
+                expect(key.token).to.not.be.null();
+            });
+
             done();
         });
     });
@@ -79,6 +85,9 @@ describe('Key', () => {
 
             expect(result.response.statusCode).to.equal(204);
             done();
+        }).catch((error) => {
+
+            console.log(error.response.statusCode);
         });
     });
 });
