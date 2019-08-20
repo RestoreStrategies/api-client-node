@@ -665,6 +665,20 @@ class Client {
                 people: {
 
                     /**
+                     * Get a person associated with an organization
+                     *
+                     * @param {integer} organization_id An organization's id
+                     *
+                     * @param {integer} person_id       The person's id
+                     */
+                    get: function (organization_id, person_id) {
+
+                        return that.getItem(
+                            `/api/admin/organizations/${organization_id}/people/${person_id}`
+                        );
+                    },
+
+                    /**
                      * Get all the people associated with an organization
                      *
                      * @param {integer} organization_id An organization's id
@@ -673,6 +687,39 @@ class Client {
 
                         return that.listItems(
                             `/api/admin/organizations/${organization_id}/people`
+                        );
+                    },
+
+                    /**
+                     * Create a person for an organization
+                     *
+                     * @param {integer} organization_id An organization's id
+                     *
+                     * @param {object} template A valid Collection+JSON template
+                     */
+                    create: function (organization_id, template) {
+
+                        return that.postData(
+                            `/api/admin/organizations/${organization_id}/people`,
+                            template
+                        );
+                    },
+
+
+                    /**
+                     * Update a person for an organization
+                     *
+                     * @param {integer} organization_id An organization's id
+                     *
+                     * @param {integer} person_id   The person's id
+                     *
+                     * @param {object} template     A valid Collection+JSON template
+                     */
+                    update: function(organization_id, person_id, template) {
+
+                        return that.postData(
+                            `/api/admin/organizations/${organization_id}/people/${person_id}`,
+                            template
                         );
                     }
                 },
